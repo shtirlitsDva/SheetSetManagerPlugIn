@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ABF_SheetSetManager</RootNamespace>
     <AssemblyName>ABF_SheetSetManager</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,15 +33,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2020\accoremgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\accoremgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcDbMgd">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2020\acdbmgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acdbmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2020\acmgd.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -59,8 +60,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="ACSMCOMPONENTS23Lib">
-      <Guid>{6243505A-A1A6-4EAA-84BB-F9F8173C54BB}</Guid>
+    <COMReference Include="ACSMCOMPONENTS24Lib">
+      <Guid>{7CC328B4-EB05-4611-B602-D23EAEAD2B2E}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
@@ -69,7 +70,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="AXDBLib">
-      <Guid>{C5661B4E-34DA-4F36-8D82-AB2BFBF4B1F1}</Guid>
+      <Guid>{39FFAA00-8623-488F-8C53-DD3B0B7A464F}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
