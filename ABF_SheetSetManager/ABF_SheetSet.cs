@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
 
 using static ABF_SheetSetManager.Utils;
 
@@ -173,6 +174,10 @@ namespace ABF_SheetSetManager
                     IAcSmSubset2 subSet2;
                     IAcSmSheet sheet;
                     IAcSmSheet2 sheet2;
+                    IAcSmAcDbLayoutReference layoutRef;
+                    //Database db = default;
+                    //Transaction tx = default;
+                    //LayoutManager layoutMgr = default;
 
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
@@ -198,9 +203,10 @@ namespace ABF_SheetSetManager
                             prdDbg($"Strækning nr: {currentPipelineNumber}");
                         }
 
-
                         var enumSheets = subSet.GetSheetEnumerator();
                         smComponent = enumSheets.Next();
+
+                        int idx = 0;
 
                         while (true)
                         {
@@ -212,6 +218,17 @@ namespace ABF_SheetSetManager
                             sheet = smComponent as AcSmSheet;
                             prdDbg("T: " + sheet.GetTitle());
                             prdDbg("N: " + sheet.GetNumber());
+                            layoutRef = sheet.GetLayout();
+
+                            ////Get the referenced layout
+                            //if (idx == 0)
+                            //{
+                            //    string dbPath = layoutRef.GetFileName();
+                            //    db = new Database(false, true);
+                            //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
+                            //    tx = db.TransactionManager.StartTransaction();
+                                
+                            //}
 
                             //Build number
                             currentSheetNumber++;
@@ -243,12 +260,22 @@ namespace ABF_SheetSetManager
                             //sheet.SetTitle(curTitle);
 
                             //Change the number and name of sheet
-                            sheet.SetNumber(sheetNumber);
-                            sheet.SetTitle(currentSheetName);
+                            //sheet.SetNumber(sheetNumber);
+                            //sheet.SetTitle(currentSheetName);
                             //sheet.SetName(currentSheetName);
 
+                            prdDbg("Layout name: " + layoutRef.GetName());
+                            prdDbg("File name: " + layoutRef.GetFileName());
+
+
+                            idx++;
                             smComponent = enumSheets.Next();
                         }
+                        //Dispose of database and transaction
+                        //tx.Commit();
+                        //tx.Dispose();
+                        //db.Dispose();
+
                         //Open the next sheet
                         smComponent = enumSubSet.Next();
                     }
