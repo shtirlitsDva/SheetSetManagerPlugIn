@@ -253,16 +253,16 @@ namespace ABF_SheetSetManager
                             prdDbg("Name: " + currentSheetName);
 
                             //Fix error!!!
-                            //sheetNumber += " ";
-                            //string curTitle = sheet.GetTitle();
+                            sheetNumber += " ";
+                            string curTitle = sheet.GetTitle();
 
-                            //curTitle = curTitle.Replace(sheetNumber, "");
-                            //sheet.SetTitle(curTitle);
+                            curTitle = curTitle.Replace(sheetNumber, "");
+                            sheet.SetTitle(curTitle);
 
                             //Change the number and name of sheet
-                            //sheet.SetNumber(sheetNumber);
-                            //sheet.SetTitle(currentSheetName);
-                            //sheet.SetName(currentSheetName);
+                            sheet.SetNumber(sheetNumber);
+                            sheet.SetTitle(currentSheetName);
+                            sheet.SetName(currentSheetName);
 
                             prdDbg("Layout name: " + layoutRef.GetName());
                             prdDbg("File name: " + layoutRef.GetFileName());
