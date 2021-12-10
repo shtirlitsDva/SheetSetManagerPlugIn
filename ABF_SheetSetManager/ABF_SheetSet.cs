@@ -214,7 +214,7 @@ namespace ABF_SheetSetManager
                             sheet = smComponent as AcSmSheet;
                             prdDbg("T: " + sheet.GetTitle());
                             prdDbg("N: " + sheet.GetNumber());
-                            layoutRef = sheet.GetLayout();
+                            //layoutRef = sheet.GetLayout();
 
                             ////Get the referenced layout
                             //if (idx == 0)
@@ -260,8 +260,8 @@ namespace ABF_SheetSetManager
                             sheet.SetTitle(currentSheetName);
                             sheet.SetName(currentSheetName);
 
-                            prdDbg("Layout name: " + layoutRef.GetName());
-                            prdDbg("File name: " + layoutRef.GetFileName());
+                            //prdDbg("Layout name: " + layoutRef.GetName());
+                            //prdDbg("File name: " + layoutRef.GetFileName());
 
 
                             idx++;
