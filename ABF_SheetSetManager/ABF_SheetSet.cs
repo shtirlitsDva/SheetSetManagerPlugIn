@@ -140,8 +140,8 @@ namespace ABF_SheetSetManager
         public void StepThroughOpenSheetSets()
         {
             //***********************************************************
-            string projectNumber = "1178";
-            string etapeNumber = "12";
+            string projectNumber = "1226";
+            string etapeNumber = "01";
             string sheetTypeNumber = "2";
             int currentSheetNumber = 0;
             string currentSheetNumberString = "";
