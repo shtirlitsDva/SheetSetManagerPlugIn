@@ -232,7 +232,7 @@ namespace ABF_SheetSetManager
 
                             string sheetNumber = $"{projectNumber}-{etapeNumber}-" +
                                                  $"{sheetTypeNumber}{currentPipelineNumber}-" +
-                                                 $"{currentSheetNumberString}-00";
+                                                 $"{currentSheetNumberString}";
 
                             prdDbg("Number: " + sheetNumber);
 
@@ -259,6 +259,129 @@ namespace ABF_SheetSetManager
                             sheet.SetNumber(sheetNumber);
                             sheet.SetTitle(currentSheetName);
                             sheet.SetName(currentSheetName);
+
+                            //prdDbg("Layout name: " + layoutRef.GetName());
+                            //prdDbg("File name: " + layoutRef.GetFileName());
+
+
+                            idx++;
+                            smComponent = enumSheets.Next();
+                        }
+                        //Dispose of database and transaction
+                        //tx.Commit();
+                        //tx.Dispose();
+                        //db.Dispose();
+
+                        //Open the next sheet
+                        smComponent = enumSubSet.Next();
+                    }
+
+                    //Unlock database
+                    LockDatabase(ref ssDb, false);
+                    // Get the next open database and increment the counter 
+                    item = enumDatabase.Next();
+                }
+            }
+            else
+            {
+                customMessage = "No sheet sets are currently open.";
+            }
+
+            // Display the custom message 
+            //MessageBox.Show(customMessage);
+            prdDbg(customMessage);
+        }
+
+        // Step through all open sheet sets 
+        //[CommandMethod("removerevisionfromname")]
+        public void removerevisionfromname()
+        {
+            // Get a reference to the Sheet Set Manager object 
+            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
+            // Get the loaded databases 
+            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
+            // Get the first open database 
+            IAcSmPersist item = enumDatabase.Next();
+            string customMessage = "";
+            // If a database is open continue 
+            if (item != null)
+            {
+                // Step through the database enumerator 
+                while (item != null)
+                {
+                    // Append the file name of the open sheet set to the output string 
+                    customMessage = customMessage + "\n" + item.GetDatabase().GetFileName();
+
+                    AcSmDatabase ssDb = item.GetDatabase();
+                    AcSmSheetSet sSet = ssDb.GetSheetSet();
+                    prdDbg(sSet.GetName());
+
+                    //Get sheet enumerator
+                    IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
+                    IAcSmComponent smComponent = enumSubSet.Next();
+                    IAcSmSubset subSet;
+                    IAcSmSubset2 subSet2;
+                    IAcSmSheet sheet;
+                    IAcSmSheet2 sheet2;
+
+                    //Lock database
+                    if (LockDatabase(ref ssDb, true) != true) return;
+
+                    while (true)
+                    {
+                        if (smComponent == null) break;
+
+                        //Always test to see what kind of object you get!
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //prdDbg(smComponent.GetTypeName());
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (smComponent.GetTypeName() != "AcSmSubset") continue;
+                        subSet = smComponent as AcSmSubset;
+                        string currentSubSetName = subSet.GetName();
+
+                        var enumSheets = subSet.GetSheetEnumerator();
+                        smComponent = enumSheets.Next();
+
+                        int idx = 0;
+
+                        while (true)
+                        {
+                            if (smComponent == null) break;
+                            //prdDbg(smComponent.GetTypeName());
+                            //prdDbg(smComponent.GetName());
+                            if (smComponent.GetTypeName() != "AcSmSheet") continue;
+
+                            sheet = smComponent as AcSmSheet;
+                            //prdDbg("T: " + sheet.GetTitle());
+                            prdDbg("N: " + sheet.GetNumber());
+                            //layoutRef = sheet.GetLayout();
+
+                            ////Get the referenced layout
+                            //if (idx == 0)
+                            //{
+                            //    string dbPath = layoutRef.GetFileName();
+                            //    db = new Database(false, true);
+                            //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
+                            //    tx = db.TransactionManager.StartTransaction();
+
+                            //}
+
+                            //Build number
+
+                            string number = sheet.GetNumber();
+                            number = number.Remove(number.Length - 3);
+                            prdDbg("New N: " + number);
+
+                            //string sheetNumber = $"{projectNumber}-{etapeNumber}-" +
+                            //                     $"{sheetTypeNumber}{currentPipelineNumber}-" +
+                            //                     $"{currentSheetNumberString}-00";
+
+                            //prdDbg("Number: " + sheetNumber);
+
+                            ////Build sheet name
+                            
+                            ////Change the number
+                            sheet.SetNumber(number);
 
                             //prdDbg("Layout name: " + layoutRef.GetName());
                             //prdDbg("File name: " + layoutRef.GetFileName());
