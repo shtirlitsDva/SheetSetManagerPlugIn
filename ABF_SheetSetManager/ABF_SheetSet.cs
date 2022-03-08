@@ -574,9 +574,13 @@ namespace ABF_SheetSetManager
                             sheet = smComponent as AcSmSheet;
 
                             AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
-                            
                             AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
                             property.SetValue(propertyValue);
+
+                            //string curNumber = sheet.GetNumber();
+                            //string newNumber = curNumber.Replace("1226", "1178");
+                            //prdDbg($"{curNumber} -> {newNumber}");
+                            //sheet.SetNumber(newNumber);
 
                             smComponent = enumSheets.Next();
                         }
