@@ -237,19 +237,25 @@ namespace ABF_SheetSetManager
                             prdDbg("Number: " + sheetNumber);
 
                             //Build sheet name
-                            regex = new Regex(@"(?<number>^\d+\s)");
                             string currentSheetName = smComponent.GetName();
+
+                            //Clean up rests of stations
+                            regex = new Regex(@"\d(?<rest>\.\d\d\d)");
+                            if (regex.IsMatch(currentSheetName))
+                            {
+                                Match match = regex.Match(currentSheetName);
+                                foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                                    if (group.Name == "rest") 
+                                        currentSheetName = currentSheetName.Replace(group.Value, "");
+                            }
+
+                            regex = new Regex(@"(?<number>^\d+\s)");
                             if (regex.IsMatch(currentSheetName))
                                 currentSheetName = regex.Replace(currentSheetName, "");
                             currentSheetName = currentSheetName.Replace("+", "");
-                            if (currentSheetName.Contains('.'))
-                            {
-                                currentSheetName = currentSheetName.Split('.')[0];
-                            }
+                            
                             prdDbg("Name: " + currentSheetName);
 
-                            //Fix error!!!
-                            sheetNumber += " ";
                             string curTitle = sheet.GetTitle();
 
                             curTitle = curTitle.Replace(sheetNumber, "");
@@ -262,7 +268,6 @@ namespace ABF_SheetSetManager
 
                             //prdDbg("Layout name: " + layoutRef.GetName());
                             //prdDbg("File name: " + layoutRef.GetFileName());
-
 
                             idx++;
                             smComponent = enumSheets.Next();
