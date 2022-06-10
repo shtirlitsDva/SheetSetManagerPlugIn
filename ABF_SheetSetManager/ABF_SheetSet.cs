@@ -522,7 +522,7 @@ namespace ABF_SheetSetManager
         {
             //***********************************************************
             string propertyName = "Dato";
-            string propertyValue = "16.03.2022";
+            string propertyValue = "10.06.2022";
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
