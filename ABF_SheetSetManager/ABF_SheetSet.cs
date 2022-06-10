@@ -578,9 +578,14 @@ namespace ABF_SheetSetManager
 
                             sheet = smComponent as AcSmSheet;
 
-                            AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
-                            AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
-                            property.SetValue(propertyValue);
+                            #region Change custom property
+                            //AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
+                            //AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
+                            //property.SetValue(propertyValue); 
+                            #endregion
+
+                            string number = sheet.GetName();
+                            sheet.SetNumber(number);
 
                             //string curNumber = sheet.GetNumber();
                             //string newNumber = curNumber.Replace("-01-", "-12-");
