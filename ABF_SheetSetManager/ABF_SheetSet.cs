@@ -521,8 +521,8 @@ namespace ABF_SheetSetManager
         public void correctallcustomproperties()
         {
             //***********************************************************
-            string propertyName = "Målestok ex 1:50";
-            string propertyValue = "1:250";
+            string propertyName = "Dato";
+            string propertyValue = "16.03.2022";
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
@@ -583,7 +583,7 @@ namespace ABF_SheetSetManager
                             property.SetValue(propertyValue);
 
                             //string curNumber = sheet.GetNumber();
-                            //string newNumber = curNumber.Replace("1226", "1178");
+                            //string newNumber = curNumber.Replace("-01-", "-12-");
                             //prdDbg($"{curNumber} -> {newNumber}");
                             //sheet.SetNumber(newNumber);
 
