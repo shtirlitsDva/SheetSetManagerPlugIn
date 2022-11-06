@@ -45,7 +45,7 @@ namespace ABF_SheetSetManager
         IAcSmSheetSet m_sheetSet;
 
         // Open a Sheet Set 
-        [CommandMethod("ABF_OpenSheetSet")]
+        //[CommandMethod("ABF_OpenSheetSet")]
         public void OpenSheetSet()
         {
             // User Input: editor equals command line
@@ -75,7 +75,7 @@ namespace ABF_SheetSetManager
         }
 
         // Create a new sheet set 
-        [CommandMethod("ABF_CreateSheetSet")]
+        //[CommandMethod("ABF_CreateSheetSet")]
         public void CreateSheetSet()
         {
             // User Input: editor equals command line
@@ -135,9 +135,9 @@ namespace ABF_SheetSetManager
         }
 
         // Step through all open sheet sets 
-        [CommandMethod("RenameSheets")]
-        [CommandMethod("RSS")]
-        public void StepThroughOpenSheetSets()
+        //[CommandMethod("RenameSheetsDev")]
+        //[CommandMethod("RSSDEV")]
+        public void StepThroughOpenSheetSetsDev()
         {
             //***********************************************************
             string projectNumber = "1226";
@@ -171,9 +171,7 @@ namespace ABF_SheetSetManager
                     IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
                     IAcSmComponent smComponent = enumSubSet.Next();
                     IAcSmSubset subSet;
-                    IAcSmSubset2 subSet2;
                     IAcSmSheet sheet;
-                    IAcSmSheet2 sheet2;
 
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
@@ -265,6 +263,167 @@ namespace ABF_SheetSetManager
                             sheet.SetNumber(sheetNumber);
                             sheet.SetTitle(currentSheetName);
                             sheet.SetName(currentSheetName);
+
+                            //prdDbg("Layout name: " + layoutRef.GetName());
+                            //prdDbg("File name: " + layoutRef.GetFileName());
+
+                            idx++;
+                            smComponent = enumSheets.Next();
+                        }
+                        //Dispose of database and transaction
+                        //tx.Commit();
+                        //tx.Dispose();
+                        //db.Dispose();
+
+                        //Open the next sheet
+                        smComponent = enumSubSet.Next();
+                    }
+
+                    //Unlock database
+                    LockDatabase(ref ssDb, false);
+                    // Get the next open database and increment the counter 
+                    item = enumDatabase.Next();
+                }
+            }
+            else
+            {
+                customMessage = "No sheet sets are currently open.";
+            }
+
+            // Display the custom message 
+            //MessageBox.Show(customMessage);
+            prdDbg(customMessage);
+        }
+
+        // Step through all open sheet sets 
+        [CommandMethod("RenameSheets")]
+        [CommandMethod("RSS")]
+        public void StepThroughOpenSheetSets()
+        {
+            //***********************************************************
+            string projectNumber = "1264";
+            string etapeNumber = "K02";
+            string sheetTypeNumber = "2";
+            int currentSheetNumber = 0;
+            string currentSheetNumberString = "";
+            string currentPipelineNumber = "";
+            //***********************************************************
+            // Get a reference to the Sheet Set Manager object 
+            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
+            // Get the loaded databases 
+            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
+            // Get the first open database 
+            IAcSmPersist item = enumDatabase.Next();
+            string customMessage = "";
+            // If a database is open continue 
+            if (item != null)
+            {
+                // Step through the database enumerator 
+                while (item != null)
+                {
+                    // Append the file name of the open sheet set to the output string 
+                    customMessage = customMessage + "\n" + item.GetDatabase().GetFileName();
+
+                    AcSmDatabase ssDb = item.GetDatabase();
+                    AcSmSheetSet sSet = ssDb.GetSheetSet();
+                    prdDbg(sSet.GetName());
+
+                    //Get sheet enumerator
+                    IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
+                    IAcSmComponent smComponent = enumSubSet.Next();
+                    IAcSmSubset subSet;
+                    IAcSmSheet sheet;
+
+                    //Lock database
+                    if (LockDatabase(ref ssDb, true) != true) return;
+
+                    while (true)
+                    {
+                        if (smComponent == null) break;
+
+                        //Always test to see what kind of object you get!
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //prdDbg(smComponent.GetTypeName());
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (smComponent.GetTypeName() != "AcSmSubset") continue;
+                        subSet = smComponent as AcSmSubset;
+                        string currentSubSetName = subSet.GetName();
+
+                        Regex regex = new Regex(@"(?<number>^\d\d)");
+
+                        if (regex.IsMatch(currentSubSetName))
+                        {
+                            Match match = regex.Match(currentSubSetName);
+                            currentPipelineNumber = match.Groups["number"].Value;
+                            prdDbg($"Strækning nr: {currentPipelineNumber}");
+                        }
+
+                        var enumSheets = subSet.GetSheetEnumerator();
+                        smComponent = enumSheets.Next();
+
+                        int idx = 0;
+
+                        while (true)
+                        {
+                            if (smComponent == null) break;
+                            if (smComponent.GetTypeName() != "AcSmSheet") continue;
+
+                            sheet = smComponent as AcSmSheet;
+                            //layoutRef = sheet.GetLayout();
+
+                            ////Get the referenced layout
+                            //if (idx == 0)
+                            //{
+                            //    string dbPath = layoutRef.GetFileName();
+                            //    db = new Database(false, true);
+                            //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
+                            //    tx = db.TransactionManager.StartTransaction();
+
+                            //}
+
+                            //Build number
+                            currentSheetNumber++;
+                            prdDbg("CurrentSheetNumber: "+ currentSheetNumber.ToString());
+                            currentSheetNumberString = currentSheetNumber.ToString("D3");
+
+                            string sheetNumber = $"{projectNumber}-{etapeNumber}-" +
+                                                 $"{sheetTypeNumber}{currentPipelineNumber}-" +
+                                                 $"{currentSheetNumberString}";
+
+                            //Build sheet name
+                            string currentSheetTitle = sheet.GetTitle();
+
+                            //Clean up rests of stations
+                            regex = new Regex(@"\d(?<rest>\.\d\d\d)");
+                            if (regex.IsMatch(currentSheetTitle))
+                            {
+                                Match match = regex.Match(currentSheetTitle);
+                                foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                                    if (group.Name == "rest")
+                                        currentSheetTitle = currentSheetTitle.Replace(group.Value, "");
+                            }
+
+                            //regex = new Regex(@"(?<number>^\d+\s)");
+                            //if (regex.IsMatch(currentSheetName))
+                            //    currentSheetName = regex.Replace(currentSheetName, "");
+
+                            currentSheetTitle = currentSheetTitle.Replace("+", "");
+
+                            //string curTitle = sheet.GetTitle();
+
+                            //curTitle = curTitle.Replace(sheetNumber, "");
+                            //sheet.SetTitle(curTitle);
+
+                            //Change the number and name of sheet
+                            sheet.SetNumber(sheetNumber);
+                            sheet.SetTitle(currentSheetTitle);
+                            //sheet.SetName(currentSheetName);
+
+                            prdDbg("GetNumber: " + sheet.GetNumber());
+                            prdDbg("NewNumber: " + sheetNumber);
+                            prdDbg("GetName: " + sheet.GetName());
+                            prdDbg("GetTitle: " + sheet.GetTitle());
+                            prdDbg("NewTitle: " + currentSheetTitle);
 
                             //prdDbg("Layout name: " + layoutRef.GetName());
                             //prdDbg("File name: " + layoutRef.GetFileName());
@@ -606,7 +765,7 @@ namespace ABF_SheetSetManager
         }
 
         // Create a new sheet set with custom subsets
-        [CommandMethod("ABF_CreateSheetSetWithSubsets")]
+        //[CommandMethod("ABF_CreateSheetSetWithSubsets")]
         public void CreateSheetSet_WithSubset()
         {
             // User Input: editor equals command line
@@ -662,7 +821,7 @@ namespace ABF_SheetSetManager
         }
 
         // Create a new sheet set 
-        [CommandMethod("ABF_SheetSet_AddCustomProperty")]
+        //[CommandMethod("ABF_SheetSet_AddCustomProperty")]
         public void CreateSheetSet_AddCustomProperty()
         {
             // Get a reference to the Sheet Set Manager object 
@@ -731,7 +890,7 @@ namespace ABF_SheetSetManager
         }
 
         // Create a new sheet set 
-        [CommandMethod("ABF_SyncProperties")]
+        //[CommandMethod("ABF_SyncProperties")]
         public void SyncProperties()
         {
             // User Input: editor equals command line
