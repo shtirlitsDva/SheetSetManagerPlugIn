@@ -140,8 +140,8 @@ namespace ABF_SheetSetManager
         public void StepThroughOpenSheetSetsDev()
         {
             //***********************************************************
-            string projectNumber = "1226";
-            string etapeNumber = "01";
+            string projectNumber = "1264";
+            string etapeNumber = "K02";
             string sheetTypeNumber = "2";
             int currentSheetNumber = 0;
             string currentSheetNumberString = "";
@@ -680,8 +680,8 @@ namespace ABF_SheetSetManager
         public void correctallcustomproperties()
         {
             //***********************************************************
-            string propertyName = "Målestok ex 1:50";
-            string propertyValue = "1:250";
+            string propertyName = "Dato";
+            string propertyValue = "10.06.2022";
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
@@ -737,10 +737,19 @@ namespace ABF_SheetSetManager
 
                             sheet = smComponent as AcSmSheet;
 
-                            AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
-                            
-                            AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
-                            property.SetValue(propertyValue);
+                            #region Change custom property
+                            //AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
+                            //AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
+                            //property.SetValue(propertyValue); 
+                            #endregion
+
+                            string number = sheet.GetName();
+                            sheet.SetNumber(number);
+
+                            //string curNumber = sheet.GetNumber();
+                            //string newNumber = curNumber.Replace("-01-", "-12-");
+                            //prdDbg($"{curNumber} -> {newNumber}");
+                            //sheet.SetNumber(newNumber);
 
                             smComponent = enumSheets.Next();
                         }
