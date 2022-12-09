@@ -221,7 +221,7 @@ namespace ABF_SheetSetManager
                             //    db = new Database(false, true);
                             //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
                             //    tx = db.TransactionManager.StartTransaction();
-                                
+
                             //}
 
                             //Build number
@@ -243,7 +243,7 @@ namespace ABF_SheetSetManager
                             {
                                 Match match = regex.Match(currentSheetName);
                                 foreach (System.Text.RegularExpressions.Group group in match.Groups)
-                                    if (group.Name == "rest") 
+                                    if (group.Name == "rest")
                                         currentSheetName = currentSheetName.Replace(group.Value, "");
                             }
 
@@ -251,7 +251,7 @@ namespace ABF_SheetSetManager
                             if (regex.IsMatch(currentSheetName))
                                 currentSheetName = regex.Replace(currentSheetName, "");
                             currentSheetName = currentSheetName.Replace("+", "");
-                            
+
                             prdDbg("Name: " + currentSheetName);
 
                             string curTitle = sheet.GetTitle();
@@ -383,7 +383,7 @@ namespace ABF_SheetSetManager
 
                             //Build number
                             currentSheetNumber++;
-                            prdDbg("CurrentSheetNumber: "+ currentSheetNumber.ToString());
+                            prdDbg("CurrentSheetNumber: " + currentSheetNumber.ToString());
                             currentSheetNumberString = currentSheetNumber.ToString("D3");
 
                             string sheetNumber = $"{projectNumber}-{etapeNumber}-" +
@@ -543,7 +543,7 @@ namespace ABF_SheetSetManager
                             //prdDbg("Number: " + sheetNumber);
 
                             ////Build sheet name
-                            
+
                             ////Change the number
                             sheet.SetNumber(number);
 
@@ -674,14 +674,24 @@ namespace ABF_SheetSetManager
             //MessageBox.Show(customMessage);
             prdDbg(customMessage);
         }
-        
+
         [CommandMethod("CORRECTALLCUSTOMPROPERTIES")]
         [CommandMethod("CACPS")]
         public void correctallcustomproperties()
         {
             //***********************************************************
-            string propertyName = "Rev A Dato";
-            string propertyValue = "01.03.2022";
+            //string propertyName = "Dato";
+            //string propertyValue = "09.12.2022";
+
+            Dictionary<string, string> properties = new Dictionary<string, string>()
+            {
+                {"Dato","09.12.2022" },
+                {"1 Tegner", "MSM" },
+                {"Kontrol","CKL" },
+                {"Godkendt","JJR" },
+                {"Målestok ex 1:50","1:250" }
+            };
+
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
@@ -738,13 +748,19 @@ namespace ABF_SheetSetManager
                             sheet = smComponent as AcSmSheet;
 
                             #region Change custom property
-                            //AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
-                            //AcSmCustomPropertyValue property = cpb.GetProperty(propertyName);
-                            //property.SetValue(propertyValue); 
+
+                            foreach (var entry in properties)
+                            {
+                                AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
+                                AcSmCustomPropertyValue property = cpb.GetProperty(entry.Key);
+                                property.SetValue(entry.Value);
+                            }
                             #endregion
 
-                            string number = sheet.GetName();
-                            sheet.SetNumber(number);
+                            sheet.SetDesc("Fors");
+
+                            //string number = sheet.GetName();
+                            //sheet.SetNumber(number);
 
                             //string curNumber = sheet.GetNumber();
                             //string newNumber = curNumber.Replace("-01-", "-12-");
