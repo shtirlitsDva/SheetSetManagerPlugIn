@@ -521,8 +521,8 @@ namespace ABF_SheetSetManager
         public void correctallcustomproperties()
         {
             //***********************************************************
-            string propertyName = "Målestok ex 1:50";
-            string propertyValue = "1:250";
+            string propertyName = "Rev A Dato";
+            string propertyValue = "01.03.2022";
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
