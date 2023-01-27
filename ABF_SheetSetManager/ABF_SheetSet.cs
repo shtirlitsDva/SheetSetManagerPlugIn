@@ -301,8 +301,8 @@ namespace ABF_SheetSetManager
         public void StepThroughOpenSheetSets()
         {
             //***********************************************************
-            string projectNumber = "1257";
-            string etapeNumber = "00";
+            string projectNumber = "1264";
+            string etapeNumber = "K02";
             string sheetTypeNumber = "2";
             int currentSheetNumber = 0;
             string currentSheetNumberString = "";
@@ -349,12 +349,14 @@ namespace ABF_SheetSetManager
                         subSet = smComponent as AcSmSubset;
                         string currentSubSetName = subSet.GetName();
 
-                        Regex regex = new Regex(@"(?<number>^\d\d)");
+                        Regex regex = new Regex(@"(?<number>\d{2,3}?\s)");
 
                         if (regex.IsMatch(currentSubSetName))
                         {
                             Match match = regex.Match(currentSubSetName);
                             currentPipelineNumber = match.Groups["number"].Value;
+                            currentPipelineNumber = currentPipelineNumber.TrimEnd();
+                            currentPipelineNumber = currentPipelineNumber.PadLeft(3, '0');
                             prdDbg($"Strækning nr: {currentPipelineNumber}");
                         }
 
