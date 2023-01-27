@@ -755,11 +755,11 @@ namespace ABF_SheetSetManager
                             {
                                 AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
                                 AcSmCustomPropertyValue property = cpb.GetProperty(entry.Key);
-                                property.SetValue(entry.Value);
+                                //property.SetValue(entry.Value);
                             }
                             #endregion
 
-                            sheet.SetDesc("Fors");
+                            sheet.SetDesc("Veks / Køge Fjernvarme");
 
                             //string number = sheet.GetName();
                             //sheet.SetNumber(number);
