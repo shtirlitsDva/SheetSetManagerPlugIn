@@ -323,7 +323,7 @@ namespace ABF_SheetSetManager
                 while (item != null)
                 {
                     // Append the file name of the open sheet set to the output string 
-                    customMessage = customMessage + "\n" + item.GetDatabase().GetFileName();
+                    prdDbg(item.GetDatabase().GetFileName());
 
                     AcSmDatabase ssDb = item.GetDatabase();
                     AcSmSheetSet sSet = ssDb.GetSheetSet();
@@ -676,7 +676,7 @@ namespace ABF_SheetSetManager
                 while (item != null)
                 {
                     // Append the file name of the open sheet set to the output string 
-                    customMessage = customMessage + "\n" + item.GetDatabase().GetFileName();
+                    prdDbg(item.GetDatabase().GetFileName());
 
                     AcSmDatabase ssDb = item.GetDatabase();
                     AcSmSheetSet sSet = ssDb.GetSheetSet();
@@ -690,15 +690,14 @@ namespace ABF_SheetSetManager
                     IAcSmSheet sheet;
                     IAcSmSheet2 sheet2;
                     IAcSmAcDbLayoutReference layoutRef;
-                    //Database db = default;
-                    //Transaction tx = default;
-                    //LayoutManager layoutMgr = default;
-
+                    
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
 
+                    int i = 0;
                     while (true)
                     {
+                        i++;
                         if (smComponent == null) break;
 
                         //Always test to see what kind of object you get!
@@ -727,15 +726,13 @@ namespace ABF_SheetSetManager
                             subSet.RemoveSheet((AcSmSheet)sheet);
                             smComponent = enumSheets.Next();
                         }
-                        //Dispose of database and transaction
-                        //tx.Commit();
-                        //tx.Dispose();
-                        //db.Dispose();
 
                         sSet.RemoveSubset(subSet);
 
                         //Open the next sheet
                         smComponent = enumSubSet.Next();
+
+                        if (i == 1000) break;
                     }
 
                     //Unlock database
