@@ -299,12 +299,29 @@ namespace ABF_SheetSetManager
         // Step through all open sheet sets 
         [CommandMethod("RenameSheets")]
         [CommandMethod("RSS")]
-        public void StepThroughOpenSheetSets()
+        public void renamesheetscallform()
+        {
+            Form_RenameSheets frs = new Form_RenameSheets();
+            frs.ShowDialog();
+            if (frs.RenameAndRenumber)
+            {
+                //Validate
+                if (string.IsNullOrEmpty(frs.projectNumber)) return;
+                if (string.IsNullOrEmpty(frs.etapeNumber)) return;
+                if (string.IsNullOrEmpty(frs.sheetTypeNumber)) return;
+
+                RenameAndRenumber(
+                    frs.projectNumber, frs.etapeNumber, frs.sheetTypeNumber);
+            }
+        }
+
+        public void RenameAndRenumber(
+            string projectNumber, string etapeNumber, string sheetTypeNumber)
         {
             //***********************************************************
-            string projectNumber = "1264";
-            string etapeNumber = "K02";
-            string sheetTypeNumber = "2";
+            //string projectNumber = "1264";
+            //string etapeNumber = "K02";
+            //string sheetTypeNumber = "2";
             int currentSheetNumber = 0;
             string currentSheetNumberString = "";
             string currentPipelineNumber = "";
