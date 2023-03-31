@@ -778,9 +778,9 @@ namespace ABF_SheetSetManager
 
             Dictionary<string, string> properties = new Dictionary<string, string>()
             {
-                {"Dato","09.12.2022" },
-                {"1 Tegner", "MSM" },
-                {"Kontrol","CKL" },
+                {"Dato","05.04.2023" },
+                {"1 Tegner", "JRA" },
+                {"Kontrol","STK" },
                 {"Godkendt","JJR" },
                 {"Målestok ex 1:50","1:250" }
             };
@@ -846,11 +846,11 @@ namespace ABF_SheetSetManager
                             {
                                 AcSmCustomPropertyBag cpb = sheet.GetCustomPropertyBag();
                                 AcSmCustomPropertyValue property = cpb.GetProperty(entry.Key);
-                                //property.SetValue(entry.Value);
+                                property.SetValue(entry.Value);
                             }
                             #endregion
 
-                            sheet.SetDesc("Veks / Køge Fjernvarme");
+                            //sheet.SetDesc("Greve Fjernvarme");
 
                             //string number = sheet.GetName();
                             //sheet.SetNumber(number);
