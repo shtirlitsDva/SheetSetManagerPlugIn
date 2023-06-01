@@ -69,6 +69,12 @@
     <Compile Include="Form_RenameSheets.Designer.cs">
       <DependentUpon>Form_RenameSheets.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_RevisionManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_RevisionManager.Designer.cs">
+      <DependentUpon>Form_RevisionManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="MySSmEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -111,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_RenameSheets.resx">
       <DependentUpon>Form_RenameSheets.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_RevisionManager.resx">
+      <DependentUpon>Form_RevisionManager.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
