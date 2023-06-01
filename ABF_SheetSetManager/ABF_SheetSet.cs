@@ -768,24 +768,64 @@ namespace ABF_SheetSetManager
             prdDbg(customMessage);
         }
 
-        [CommandMethod("CORRECTALLCUSTOMPROPERTIES")]
-        [CommandMethod("CACPS")]
-        public void correctallcustomproperties()
+        [CommandMethod("MODIFYCUSTOMPROPERTIES")]
+        [CommandMethod("MODPROPS")]
+        public void modifycustomproperties()
         {
-            //***********************************************************
-            //string propertyName = "Dato";
-            //string propertyValue = "09.12.2022";
+            // Get a reference to the Sheet Set Manager object 
+            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
+            // Get the loaded databases 
+            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
 
-            Dictionary<string, string> properties = new Dictionary<string, string>()
+            #region Safeguarding for mulitple open databases
+            //Safeguarding for multiple open databases
+            int dbCount = 0;
+            IAcSmPersist item = enumDatabase.Next();
+            while (item != null)
             {
-                {"Dato","05.04.2023" },
-                {"1 Tegner", "JRA" },
-                {"Kontrol","STK" },
-                {"Godkendt","JJR" },
-                {"Målestok ex 1:50","1:250" }
-            };
+                dbCount++;
+                item = enumDatabase.Next();
+            }
+            if (dbCount > 1)
+            {
+                prdDbg("Multiple databases open! Only one database must be open (.dst file)!");
+                return;
+            }
+            if (dbCount < 1)
+            {
+                prdDbg("No database is open! Open one and only one database (.dst file)!");
+            }
+            #endregion
 
-            //***********************************************************
+            #region Get custom properties bag
+            enumDatabase.Reset();
+            item = enumDatabase.Next();
+            AcSmDatabase ssDb = item.GetDatabase();
+            AcSmSheetSet sSet = ssDb.GetSheetSet();
+            AcSmCustomPropertyBag cpb = sSet.GetCustomPropertyBag();
+            IAcSmEnumProperty propEnum = cpb.GetPropertyEnumerator();
+            List<string> propList = new List<string>() { "Cancel" };
+            string propName = default;
+            AcSmCustomPropertyValue value = default;
+            propEnum.Next(out propName, out value);
+            while (!string.IsNullOrEmpty(propName))
+            {
+                propList.Add(propName);
+                propEnum.Next(out propName, out value);
+            }
+            #endregion
+
+            var form = new Form_ModifyCustomProperties(propList);
+            form.ShowDialog();
+
+            //MessageBox.Show(string.Join(Environment.NewLine, form.PropsAndValues.Select(x => x.Key + " -> " + x.Value)));
+
+            correctallcustomproperties(form.PropsAndValues);
+        }
+        private void correctallcustomproperties(Dictionary<string, string> properties)
+        {
+            if (properties.Any(x => x.Key == "Cancel")) { prdDbg("Cancelled!"); return; }
+
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
             // Get the loaded databases 
@@ -849,16 +889,6 @@ namespace ABF_SheetSetManager
                                 property.SetValue(entry.Value);
                             }
                             #endregion
-
-                            //sheet.SetDesc("Greve Fjernvarme");
-
-                            //string number = sheet.GetName();
-                            //sheet.SetNumber(number);
-
-                            //string curNumber = sheet.GetNumber();
-                            //string newNumber = curNumber.Replace("-01-", "-12-");
-                            //prdDbg($"{curNumber} -> {newNumber}");
-                            //sheet.SetNumber(newNumber);
 
                             smComponent = enumSheets.Next();
                         }
