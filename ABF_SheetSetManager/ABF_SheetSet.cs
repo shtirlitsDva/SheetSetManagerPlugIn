@@ -975,7 +975,6 @@ namespace ABF_SheetSetManager
 
         }
 
-
         // Create a new sheet set with custom subsets
         //[CommandMethod("ABF_CreateSheetSetWithSubsets")]
         public void CreateSheetSet_WithSubset()
