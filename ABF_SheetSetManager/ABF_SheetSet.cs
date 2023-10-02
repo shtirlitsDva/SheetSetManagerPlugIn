@@ -477,6 +477,217 @@ namespace ABF_SheetSetManager
         }
 
         // Step through all open sheet sets 
+        [CommandMethod("RenameOldSheetsToNew")]
+        [CommandMethod("ROS")]
+        public void renameoldsheetstonew()
+        {
+            RenameOldAndRenumberOld();
+        }
+
+        public void RenameOldAndRenumberOld()
+        {
+            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>[\d.]+)-(?<drawingtype>1)(?<pipelinenumber>\d+)-(?<number>\d+)");
+            Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[a-æøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
+
+            //***********************************************************
+            //string projectNumber = "1264";
+            //string etapeNumber = "K02";
+            //string sheetTypeNumber = "2";
+            int currentSheetNumber = 0;
+            string currentSheetNumberString = "";
+            string currentPipelineNumber = "";
+            //***********************************************************
+            // Get a reference to the Sheet Set Manager object 
+            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
+            // Get the loaded databases 
+            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
+            // Get the first open database 
+            IAcSmPersist item = enumDatabase.Next();
+            string customMessage = "";
+            // If a database is open continue 
+            if (item != null)
+            {
+                // Step through the database enumerator 
+                while (item != null)
+                {
+                    // Append the file name of the open sheet set to the output string 
+                    prdDbg(item.GetDatabase().GetFileName());
+
+                    AcSmDatabase ssDb = item.GetDatabase();
+                    AcSmSheetSet sSet = ssDb.GetSheetSet();
+                    prdDbg(sSet.GetName());
+
+                    //Get sheet enumerator
+                    IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
+                    IAcSmComponent smComponent = enumSubSet.Next();
+                    IAcSmSubset subSet;
+                    IAcSmSheet sheet;
+
+                    //Lock database
+                    if (LockDatabase(ref ssDb, true) != true) return;
+
+                    while (true)
+                    {
+                        if (smComponent == null) break;
+
+                        //Always test to see what kind of object you get!
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //prdDbg(smComponent.GetTypeName());
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (smComponent.GetTypeName() != "AcSmSubset") continue;
+                        subSet = smComponent as AcSmSubset;
+                        string currentSubSetName = subSet.GetName();
+
+                        Regex regex = new Regex(@"(?<number>\d{2,3})");
+
+                        if (regex.IsMatch(currentSubSetName))
+                        {
+                            Match match = regex.Match(currentSubSetName);
+                            currentPipelineNumber = match.Groups["number"].Value;
+                            currentPipelineNumber = currentPipelineNumber.TrimEnd();
+                            currentPipelineNumber = currentPipelineNumber.PadLeft(3, '0');
+                            //prdDbg($"Strækning nr: {currentPipelineNumber}");
+                        }
+
+                        var enumSheets = subSet.GetSheetEnumerator();
+                        smComponent = enumSheets.Next();
+
+                        int idx = 0;
+
+                        while (true)
+                        {
+                            if (smComponent == null) break;
+                            if (smComponent.GetTypeName() != "AcSmSheet") continue;
+
+                            sheet = smComponent as AcSmSheet;
+                            //layoutRef = sheet.GetLayout();
+
+                            ////Get the referenced layout
+                            //if (idx == 0)
+                            //{
+                            //    string dbPath = layoutRef.GetFileName();
+                            //    db = new Database(false, true);
+                            //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
+                            //    tx = db.TransactionManager.StartTransaction();
+
+                            //}
+
+                            //prdDbg("GetNumber: " + sheet.GetNumber());
+                            //prdDbg("NewNumber: " + sheetNumber);
+                            //prdDbg("GetName: " + sheet.GetName());
+                            //prdDbg("GetTitle: " + sheet.GetTitle());
+                            //prdDbg("NewTitle: " + currentSheetTitle);
+
+                            //Build number
+
+
+                            //Build sheet name
+                            //string currentSheetTitle = sheet.GetTitle();
+
+                            //Clean up rests of stations
+                            //regex = new Regex(@"\d(?<rest>\.\d\d\d)");
+                            //if (regex.IsMatch(currentSheetTitle))
+                            //{
+                            //    Match match = regex.Match(currentSheetTitle);
+                            //    foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                            //        if (group.Name == "rest")
+                            //            currentSheetTitle = currentSheetTitle.Replace(group.Value, "");
+                            //}
+
+
+                            //currentSheetTitle = currentSheetTitle.Replace("+", "");
+
+                            
+
+                            //Change the number and name of sheet
+                            //sheet.SetNumber(sheetNumber);
+                            //sheet.SetTitle(currentSheetTitle);
+                            //sheet.SetName(currentSheetName);
+
+                            string curNumber = sheet.GetNumber();
+                            string curTitle = sheet.GetTitle();
+
+                            prdDbg("\nStrækning: " + currentSubSetName+". Værdier:");
+
+                            Match match = rgxNum.Match(curNumber);
+                            string projectnumber = match.Groups["projectnumber"].Value;
+                            string etapenumber = match.Groups["etapenumber"].Value;
+                            string drawingtype = "0" + match.Groups["drawingtype"].Value;
+                            string pipelinenumber = match.Groups["pipelinenumber"].Value;
+                            string number = match.Groups["number"].Value;
+
+                            //etapenumber = etapenumber.Replace('.', '-');
+
+                            match = rgxTtl.Match(curTitle);
+                            string pipelinenumber2 = match.Groups["pipelinenumber"].Value;
+                            string streetname = match.Groups["streetname"].Value;
+                            string stationrange = match.Groups["stationrange"].Value;
+
+                            List<string> list = new List<string>()
+                            {
+                                "Projectnumber " + projectnumber,
+                                "Etapenumber " + etapenumber,
+                                "Drawingtype " + drawingtype,
+                                "Pipelinenumber " + pipelinenumber,
+                                "Number " + number,
+                                "Pipelinenumber2 " + pipelinenumber2,
+                                "Streetname " + streetname,
+                                "Stationrange " + stationrange
+                            };
+
+                            //prdDbg(string.Join("\n", list));
+
+                            //Make new values
+                            string newNumber = $"{projectnumber}_{etapenumber}_{drawingtype}_{pipelinenumber}_{number}";
+                            string newTitle = "LEDNINGSPLAN";
+
+                            string newEmneLine2 = $"STRÆKNING {pipelinenumber}";
+                            string newEmneLine3 = $"ST {stationrange}";
+
+                            prdDbg(newNumber);
+                            prdDbg(newTitle);
+                            prdDbg(newEmneLine2);
+                            prdDbg(newEmneLine3);
+
+                            sheet.SetNumber(newNumber);
+                            sheet.SetTitle(newTitle);
+
+                            var cpb = sheet.GetCustomPropertyBag();
+                            var prop = cpb.GetProperty("Emnelinje 1");
+                            prop.SetValue(newEmneLine2);
+
+                            prop = cpb.GetProperty("Emnelinje 2");
+                            prop.SetValue(newEmneLine3);
+
+                            idx++;
+                            smComponent = enumSheets.Next();
+                        }
+                        //Dispose of database and transaction
+                        //tx.Commit();
+                        //tx.Dispose();
+                        //db.Dispose();
+
+                        //Open the next sheet
+                        smComponent = enumSubSet.Next();
+                    }
+
+                    //Unlock database
+                    LockDatabase(ref ssDb, false);
+                    // Get the next open database and increment the counter 
+                    item = enumDatabase.Next();
+                }
+            }
+            else
+            {
+                customMessage = "No sheet sets are currently open.";
+            }
+
+            // Display the custom message 
+            //MessageBox.Show(customMessage);
+            prdDbg(customMessage);
+        }
+
+        // Step through all open sheet sets 
         [CommandMethod("DUMPALLSHEETNAMES")]
         public void dumpallsheetnames()
         {
@@ -707,7 +918,7 @@ namespace ABF_SheetSetManager
                     IAcSmSheet sheet;
                     IAcSmSheet2 sheet2;
                     IAcSmAcDbLayoutReference layoutRef;
-                    
+
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
 
@@ -951,7 +1162,7 @@ namespace ABF_SheetSetManager
             item = enumDatabase.Next();
             AcSmDatabase ssDb = item.GetDatabase();
             AcSmSheetSet sSet = ssDb.GetSheetSet();
-            
+
             if (LockDatabase(ref ssDb, true) != true) return;
 
             //Get sheet enumerator
