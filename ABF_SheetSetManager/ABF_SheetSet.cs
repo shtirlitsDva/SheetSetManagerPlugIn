@@ -486,7 +486,7 @@ namespace ABF_SheetSetManager
 
         public void RenameOldAndRenumberOld()
         {
-            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>[\d.]+)-(?<drawingtype>1)(?<pipelinenumber>\d+)-(?<number>\d+)");
+            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>[\d.]+\D?)-(?<drawingtype>1)(?<pipelinenumber>\d+)-(?<number>\d+)");
             Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[a-æøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
 
             //***********************************************************
@@ -649,15 +649,18 @@ namespace ABF_SheetSetManager
                             prdDbg(newEmneLine2);
                             prdDbg(newEmneLine3);
 
-                            sheet.SetNumber(newNumber);
-                            sheet.SetTitle(newTitle);
+                            if (rgxNum.IsMatch(curNumber))
+                            {
+                                sheet.SetNumber(newNumber);
+                                sheet.SetTitle(newTitle);
 
-                            var cpb = sheet.GetCustomPropertyBag();
-                            var prop = cpb.GetProperty("Emnelinje 1");
-                            prop.SetValue(newEmneLine2);
+                                var cpb = sheet.GetCustomPropertyBag();
+                                var prop = cpb.GetProperty("Emnelinje 1");
+                                prop.SetValue(newEmneLine2);
 
-                            prop = cpb.GetProperty("Emnelinje 2");
-                            prop.SetValue(newEmneLine3);
+                                prop = cpb.GetProperty("Emnelinje 2");
+                                prop.SetValue(newEmneLine3); 
+                            }
 
                             idx++;
                             smComponent = enumSheets.Next();
