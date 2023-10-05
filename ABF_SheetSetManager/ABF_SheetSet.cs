@@ -1115,6 +1115,8 @@ namespace ABF_SheetSetManager
             var form = new Form_ModifyCustomProperties(propList);
             form.ShowDialog();
 
+            if (form.PropsAndValues.Any(x => x.Key == "Cancel")) { prdDbg("Cancelled!"); return; }
+
             LockDatabase(ref ssDb, false);
 
             //MessageBox.Show(string.Join(Environment.NewLine, form.PropsAndValues.Select(x => x.Key + " -> " + x.Value)));
@@ -1123,8 +1125,6 @@ namespace ABF_SheetSetManager
         }
         private void correctallcustomproperties(Dictionary<string, string> properties)
         {
-            if (properties.Any(x => x.Key == "Cancel")) { prdDbg("Cancelled!"); return; }
-
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
             // Get the loaded databases 
