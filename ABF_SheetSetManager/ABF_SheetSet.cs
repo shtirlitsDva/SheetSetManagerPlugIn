@@ -1115,10 +1115,9 @@ namespace ABF_SheetSetManager
             var form = new Form_ModifyCustomProperties(propList);
             form.ShowDialog();
 
-            if (form.PropsAndValues.Any(x => x.Key == "Cancel")) { prdDbg("Cancelled!"); return; }
-
             LockDatabase(ref ssDb, false);
 
+            if (form.PropsAndValues.Any(x => x.Key == "Cancel")) { prdDbg("Cancelled!"); return; }
             //MessageBox.Show(string.Join(Environment.NewLine, form.PropsAndValues.Select(x => x.Key + " -> " + x.Value)));
 
             correctallcustomproperties(form.PropsAndValues);
