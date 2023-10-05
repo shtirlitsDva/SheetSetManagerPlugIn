@@ -487,7 +487,7 @@ namespace ABF_SheetSetManager
         public void RenameOldAndRenumberOld()
         {
             Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>[\d.]+\D?)-(?<drawingtype>1)(?<pipelinenumber>\d+)-(?<number>\d+)");
-            Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[a-æøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
+            Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[\w\sæøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
 
             //***********************************************************
             //string projectNumber = "1264";
@@ -607,7 +607,7 @@ namespace ABF_SheetSetManager
                             string curNumber = sheet.GetNumber();
                             string curTitle = sheet.GetTitle();
 
-                            prdDbg("\nStrækning: " + currentSubSetName+". Værdier:");
+                            //prdDbg("\nStrækning: " + currentSubSetName+". Værdier:");
 
                             Match match = rgxNum.Match(curNumber);
                             string projectnumber = match.Groups["projectnumber"].Value;
@@ -649,7 +649,7 @@ namespace ABF_SheetSetManager
                             prdDbg(newEmneLine2);
                             prdDbg(newEmneLine3);
 
-                            if (rgxNum.IsMatch(curNumber))
+                            if (rgxNum.IsMatch(curNumber) && rgxTtl.IsMatch(curTitle))
                             {
                                 sheet.SetNumber(newNumber);
                                 sheet.SetTitle(newTitle);
@@ -659,7 +659,7 @@ namespace ABF_SheetSetManager
                                 prop.SetValue(newEmneLine2);
 
                                 prop = cpb.GetProperty("Emnelinje 2");
-                                prop.SetValue(newEmneLine3); 
+                                prop.SetValue(newEmneLine3);
                             }
 
                             idx++;
