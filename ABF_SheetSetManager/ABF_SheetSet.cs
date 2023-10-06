@@ -486,17 +486,9 @@ namespace ABF_SheetSetManager
 
         public void RenameOldAndRenumberOld()
         {
-            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>[\d.]+\D?)-(?<drawingtype>1)(?<pipelinenumber>\d+)-(?<number>\d+)");
+            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)(?<pipelinenumber>\d+)-(?<number>\d+)");
             Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[\w\sæøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
 
-            //***********************************************************
-            //string projectNumber = "1264";
-            //string etapeNumber = "K02";
-            //string sheetTypeNumber = "2";
-            int currentSheetNumber = 0;
-            string currentSheetNumberString = "";
-            string currentPipelineNumber = "";
-            //***********************************************************
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
             // Get the loaded databases 
@@ -540,6 +532,7 @@ namespace ABF_SheetSetManager
 
                         Regex regex = new Regex(@"(?<number>\d{2,3})");
 
+                        string currentPipelineNumber = "";
                         if (regex.IsMatch(currentSubSetName))
                         {
                             Match match = regex.Match(currentSubSetName);
@@ -644,6 +637,7 @@ namespace ABF_SheetSetManager
                             string newEmneLine2 = $"STRÆKNING {pipelinenumber}";
                             string newEmneLine3 = $"ST {stationrange}";
 
+                            prdDbg(currentPipelineNumber + " ->");
                             prdDbg(newNumber);
                             prdDbg(newTitle);
                             prdDbg(newEmneLine2);
