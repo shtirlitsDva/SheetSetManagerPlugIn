@@ -486,8 +486,10 @@ namespace ABF_SheetSetManager
 
         public void RenameOldAndRenumberOld()
         {
-            Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)(?<pipelinenumber>\d+)-(?<number>\d+)");
-            Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[\w\sæøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
+            //Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)(?<pipelinenumber>\d+)-(?<number>\d+)");
+            Regex rgxNum = new Regex(@"(?<projectnumber>[a-zA-ZæøåÆØÅ0-9]+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)-(?<number>\d+)");
+            //Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[\w\sæøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
+            Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\sST\s(?<stationrange>\d+\s-\s\d+)");
 
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
@@ -606,14 +608,14 @@ namespace ABF_SheetSetManager
                             string projectnumber = match.Groups["projectnumber"].Value;
                             string etapenumber = match.Groups["etapenumber"].Value;
                             string drawingtype = "0" + match.Groups["drawingtype"].Value;
-                            string pipelinenumber = match.Groups["pipelinenumber"].Value;
+                            //string pipelinenumber = match.Groups["pipelinenumber"].Value;
                             string number = match.Groups["number"].Value;
 
                             //etapenumber = etapenumber.Replace('.', '-');
 
                             match = rgxTtl.Match(curTitle);
-                            string pipelinenumber2 = match.Groups["pipelinenumber"].Value;
-                            string streetname = match.Groups["streetname"].Value;
+                            string pipelinenumber = match.Groups["pipelinenumber"].Value;
+                            //string streetname = match.Groups["streetname"].Value;
                             string stationrange = match.Groups["stationrange"].Value;
 
                             List<string> list = new List<string>()
@@ -623,8 +625,8 @@ namespace ABF_SheetSetManager
                                 "Drawingtype " + drawingtype,
                                 "Pipelinenumber " + pipelinenumber,
                                 "Number " + number,
-                                "Pipelinenumber2 " + pipelinenumber2,
-                                "Streetname " + streetname,
+                                //"Pipelinenumber2" + pipelinenumber2,
+                                //"Streetname " + streetname,
                                 "Stationrange " + stationrange
                             };
 
