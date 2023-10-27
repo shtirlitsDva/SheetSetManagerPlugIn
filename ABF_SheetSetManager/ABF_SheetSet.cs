@@ -487,7 +487,7 @@ namespace ABF_SheetSetManager
         public void RenameOldAndRenumberOld()
         {
             //Regex rgxNum = new Regex(@"(?<projectnumber>\d+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)(?<pipelinenumber>\d+)-(?<number>\d+)");
-            Regex rgxNum = new Regex(@"(?<projectnumber>[a-zA-ZæøåÆØÅ0-9]+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)-(?<number>\d+)");
+            Regex rgxNum = new Regex(@"(?<projectnumber>[a-zA-ZæøåÆØÅ0-9\s]+)-(?<etapenumber>\D?[\d.]+\D?)-(?<drawingtype>\d\d)-(?<number>\d+)");
             //Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\s(?<streetname>[\w\sæøåA-ÆØÅ]+)\sST\s(?<stationrange>\d+\s-\s\d+)");
             Regex rgxTtl = new Regex(@"(?<pipelinenumber>\d+)\sST\s(?<stationrange>\d+\s-\s\d+)");
 
@@ -605,7 +605,7 @@ namespace ABF_SheetSetManager
                             //prdDbg("\nStrækning: " + currentSubSetName+". Værdier:");
 
                             Match match = rgxNum.Match(curNumber);
-                            string projectnumber = match.Groups["projectnumber"].Value;
+                            string projectnumber = match.Groups["projectnumber"].Value.Replace(" ","");
                             string etapenumber = match.Groups["etapenumber"].Value;
                             string drawingtype = "0" + match.Groups["drawingtype"].Value;
                             //string pipelinenumber = match.Groups["pipelinenumber"].Value;
