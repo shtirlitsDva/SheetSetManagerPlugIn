@@ -64,6 +64,12 @@
     <Compile Include="Form_ModifyCustomProperties.Designer.cs">
       <DependentUpon>Form_ModifyCustomProperties.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_RenameSheetsNS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_RenameSheetsNS.Designer.cs">
+      <DependentUpon>Form_RenameSheetsNS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_RenameSheetsVF.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Form_ModifyCustomProperties.resx">
       <DependentUpon>Form_ModifyCustomProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_RenameSheetsNS.resx">
+      <DependentUpon>Form_RenameSheetsNS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_RenameSheetsVF.resx">
       <DependentUpon>Form_RenameSheetsVF.cs</DependentUpon>
