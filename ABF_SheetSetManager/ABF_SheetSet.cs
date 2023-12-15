@@ -498,7 +498,7 @@ namespace ABF_SheetSetManager
             string program, string vfkommunekode, string energidistrikt)
         {
             //***********************************************************
-            Regex rgx = new Regex(@"(?<NR>\d+)\sST\s(?<FST>\d\+\d{3})\s-\s(?<SST>\d\+\d{3})\.*\d*");
+            Regex rgx = new Regex(@"(?<NR>\d+)\sST\s-?(?<FST>\d\+\d{3})(\.\d+)?\s-\s(?<SST>\d\+\d{3})\.*\d*");
             int currentSheetNumber = 0;
             //***********************************************************
             // Get a reference to the Sheet Set Manager object 
@@ -530,10 +530,8 @@ namespace ABF_SheetSetManager
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
 
-                    while (true)
+                    while (smComponent != null)
                     {
-                        if (smComponent == null) break;
-
                         //Always test to see what kind of object you get!
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         //prdDbg(smComponent.GetTypeName());
@@ -586,11 +584,13 @@ namespace ABF_SheetSetManager
                             else
                             {
                                 prdDbg($"Sheet title {title} did not match Regex!");
-                                continue;
                             }
 
                             idx++;
                             smComponent = enumSheets.Next();
+
+                            //prdDbg($"Idx = {idx}");
+                            System.Windows.Forms.Application.DoEvents();
                         }
                         //Dispose of database and transaction
                         //tx.Commit();
@@ -599,6 +599,7 @@ namespace ABF_SheetSetManager
 
                         //Open the next sheet
                         smComponent = enumSubSet.Next();
+                        System.Windows.Forms.Application.DoEvents();
                     }
 
                     //Unlock database
