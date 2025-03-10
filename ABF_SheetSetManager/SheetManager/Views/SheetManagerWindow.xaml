@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ABF_SheetSetManager.SheetManager.Views"
         mc:Ignorable="d"
-        Title="Sheet Manager" Height="600" Width="900">
+        Title="Sheet Manager" Height="600" Width="900"
+        >
+
+    <Window.Resources>
+        <ResourceDictionary Source="Styles/Styles.xaml"/>
+    </Window.Resources>
 
     <Grid>
         <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding SelectedSheet}"

@@ -40,12 +40,13 @@ namespace ABF_SheetSetManager.SheetManager.Interop
             }
             #endregion
 
-            #region
+            #region Get the Sheet Set
             enumDatabase.Reset();
             item = enumDatabase.Next();
             AcSmDatabase ssDb = item.GetDatabase();
             AcSmSheetSet sSet = ssDb.GetSheetSet();
             return sSet;
+            #endregion
         }
     }
 }

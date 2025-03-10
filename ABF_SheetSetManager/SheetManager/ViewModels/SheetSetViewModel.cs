@@ -50,6 +50,7 @@ namespace ABF_SheetSetManager.SheetManager.ViewModels
 
                     var model = new SheetModel();
                     model.Oid = sheet.GetObjectId(); //Stable reference to the object
+                    model.SheetNumber = sheet.GetNumber();
                     foreach (var prop in sheetProperties)
                     {
                         switch (prop.Name)
