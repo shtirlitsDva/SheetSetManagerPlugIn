@@ -1,9 +1,10 @@
-﻿<Window x:Class="ABF_SheetSetManager.SheetManager.Views.SheetManagerWindow"
+﻿<hc:Window x:Class="SheetSetManager.SheetManager.Views.SheetManagerWindow"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ABF_SheetSetManager.SheetManager.Views"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:SheetSetManager.SheetManager.Views"
         mc:Ignorable="d"
         Title="Sheet Manager" Height="600" Width="900"
         >
@@ -72,4 +73,4 @@
 
         </DataGrid>
     </Grid>
-</Window>
+</hc:Window>

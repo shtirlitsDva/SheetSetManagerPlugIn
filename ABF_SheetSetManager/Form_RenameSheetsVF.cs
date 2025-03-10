@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ABF_SheetSetManager
+namespace SheetSetManager
 {
     public partial class Form_RenameSheetsVF : Form
     {

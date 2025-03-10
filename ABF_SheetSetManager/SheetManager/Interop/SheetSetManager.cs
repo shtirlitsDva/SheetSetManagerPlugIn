@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using static ABF_SheetSetManager.Utils;
+using static SheetSetManager.Utils;
 
-namespace ABF_SheetSetManager.SheetManager.Interop
+namespace SheetSetManager.SheetManager.Interop
 {
     internal class SheetSetManager
     {

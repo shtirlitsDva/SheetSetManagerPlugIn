@@ -13,11 +13,12 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 
-using static ABF_SheetSetManager.Utils;
-using ABF_SheetSetManager.Wrappers;
+using static SheetSetManager.Utils;
+using SheetSetManager.Wrappers;
 using System.IO;
-using ABF_SheetSetManager.SheetManager.Interop;
-using ABF_SheetSetManager.SheetManager.Views;
+using SheetSetManager.SheetManager.Interop;
+using SheetSetManager.SheetManager.Views;
+using System.Reflection;
 
 // Instructions:
 // 1) Add references: 
@@ -35,9 +36,11 @@ using ABF_SheetSetManager.SheetManager.Views;
 
 // 5) Make sure references do not copy local: Select Reference > right click > properties > Copy Local = False
 
-namespace ABF_SheetSetManager
+[assembly: CommandClass(typeof(SheetSetManager.Commands))]
+
+namespace SheetSetManager
 {
-    public class ABF_SheetSet
+    public class Commands : IExtensionApplication
     {
         MySSmEventHandler eventHandler;
         Int32 eventSSMCookie;
@@ -47,258 +50,25 @@ namespace ABF_SheetSetManager
         IAcSmDatabase m_sheetSetDatabase;
         IAcSmSheetSet m_sheetSet;
 
-        // Open a Sheet Set 
-        //[CommandMethod("ABF_OpenSheetSet")]
-        public void OpenSheetSet()
+        #region IExtensionApplication members
+        public void Initialize()
         {
-            // User Input: editor equals command line
-            // To talk to the user you use the command line, aka the editor
-            Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
+            Document doc = Autodesk.AutoCAD.ApplicationServices.Application
+                .DocumentManager.MdiActiveDocument;
+            doc.Editor.WriteMessage("\nVelkommen til Norsyn Sheet Set Manager!");
 
-            PromptStringOptions pso = new PromptStringOptions("\nHello Nadia! \nWhat Sheet Set would you like to open?");
-            pso.DefaultValue = @"C:\Users\rhale\Documents\AutoCAD Sheet Sets\Squid666.dst";
-            pso.UseDefaultValue = true;
-            pso.AllowSpaces = true;
-            PromptResult pr = ed.GetString(pso);
-
-            // Get a reference to the Sheet Set Manager object 
-            IAcSmSheetSetMgr sheetSetManager = default(IAcSmSheetSetMgr);
-            sheetSetManager = new AcSmSheetSetMgr();
-
-            // Open a Sheet Set file 
-            AcSmDatabase sheetSetDatabase = default(AcSmDatabase);
-            //sheetSetDatabase = sheetSetManager.OpenDatabase(@"C:\Users\Robert\Documents\AutoCAD Sheet Sets\Expedia.dst", false);
-            sheetSetDatabase = sheetSetManager.OpenDatabase(pr.StringResult, false);
-
-            // Return the namd and description of the sheet set
-            MessageBox.Show("Sheet Set Name: " + sheetSetDatabase.GetSheetSet().GetName() + "\nSheet Set Description: " + sheetSetDatabase.GetSheetSet().GetDesc());
-
-            // Close the sheet set 
-            sheetSetManager.Close(sheetSetDatabase);
+#if DEBUG
+            AppDomain.CurrentDomain.AssemblyResolve += 
+                new ResolveEventHandler(DebugHelper.Debug_AssemblyResolve);
+#endif
         }
 
-        // Create a new sheet set 
-        //[CommandMethod("ABF_CreateSheetSet")]
-        public void CreateSheetSet()
+        public void Terminate()
         {
-            // User Input: editor equals command line
-            // To talk to the user you use the command line, aka the editor
-            Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
-
-            PromptResult pr = ed.GetFileNameForSave("Hello Nadia, Where would you would like to save the new Sheet Set?");
-
-            PromptStringOptions pso = new PromptStringOptions("\nHello Nadia! \nWhat will be the name of the new Sheet Set?");
-            pso.AllowSpaces = true;
-            PromptResult prSheetSetName = ed.GetString(pso);
-
-            PromptStringOptions psoDescription = new PromptStringOptions("\nHello Nadia! \nWhat will be the description of the new Sheet Set?");
-            psoDescription.AllowSpaces = true;
-            PromptResult prSheetSetDescription = ed.GetString(psoDescription);
-
-
-            //pso.DefaultValue = @"C:\Users\Robert\Documents\AutoCAD Sheet Sets\Expedia.dst";
-            //pso.UseDefaultValue = true;
-
-            // works...
-
-            // Get a reference to the Sheet Set Manager object 
-            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
-
-            // Create a new sheet set file 
-            //AcSmDatabase sheetSetDatabase = sheetSetManager.CreateDatabase(@"C:\Users\Robert\Documents\AutoCAD Sheet Sets\ExpediaSheetSetDemo.dst", "", true);
-            AcSmDatabase sheetSetDatabase = sheetSetManager.CreateDatabase(pr.StringResult, "", true);
-
-            // Get the sheet set from the database 
-            AcSmSheetSet sheetSet = sheetSetDatabase.GetSheetSet();
-
-            // Attempt to lock the database
-            if (LockDatabase(ref sheetSetDatabase, true) == true)
-            {
-                // Set the name and description of the sheet set 
-                //sheetSet.SetName("ExpediaSheetSetTest");
-                sheetSet.SetName(prSheetSetName.StringResult);
-
-                //sheetSet.SetDesc("Aluminum Bronze Fabricator's Sheet Set Object Demo");
-                sheetSet.SetDesc(prSheetSetDescription.StringResult);
-
-                // Unlock the database 
-                LockDatabase(ref sheetSetDatabase, false);
-
-                // Return the name and description of the sheet set 
-                MessageBox.Show("Sheet Set Name: " + sheetSetDatabase.GetSheetSet().GetName() + "\nSheet Set Description: " + sheetSetDatabase.GetSheetSet().GetDesc());
-            }
-            else
-            {
-                // Display error message 
-                MessageBox.Show("Sheet set could not be opened for write.");
-            }
-
-            // Close the sheet set 
-            sheetSetManager.Close(sheetSetDatabase);
+            //Add your termination code here
         }
+        #endregion
 
-        // Step through all open sheet sets 
-        //[CommandMethod("RenameSheetsDev")]
-        //[CommandMethod("RSSDEV")]
-        public void StepThroughOpenSheetSetsDev()
-        {
-            //***********************************************************
-            string projectNumber = "1264";
-            string etapeNumber = "K02";
-            string sheetTypeNumber = "2";
-            int currentSheetNumber = 0;
-            string currentSheetNumberString = "";
-            string currentPipelineNumber = "";
-            //***********************************************************
-            // Get a reference to the Sheet Set Manager object 
-            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
-            // Get the loaded databases 
-            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
-            // Get the first open database 
-            IAcSmPersist item = enumDatabase.Next();
-            string customMessage = "";
-            // If a database is open continue 
-            if (item != null)
-            {
-                // Step through the database enumerator 
-                while (item != null)
-                {
-                    // Append the file name of the open sheet set to the output string 
-                    customMessage = customMessage + "\n" + item.GetDatabase().GetFileName();
-
-                    AcSmDatabase ssDb = item.GetDatabase();
-                    AcSmSheetSet sSet = ssDb.GetSheetSet();
-                    prdDbg(sSet.GetName());
-
-                    //Get sheet enumerator
-                    IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
-                    IAcSmComponent smComponent = enumSubSet.Next();
-                    IAcSmSubset subSet;
-                    IAcSmSheet sheet;
-
-                    //Lock database
-                    if (LockDatabase(ref ssDb, true) != true) return;
-
-                    while (true)
-                    {
-                        if (smComponent == null) break;
-
-                        //Always test to see what kind of object you get!
-                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        //prdDbg(smComponent.GetTypeName());
-                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        if (smComponent.GetTypeName() != "AcSmSubset") continue;
-                        subSet = smComponent as AcSmSubset;
-                        string currentSubSetName = subSet.GetName();
-
-                        Regex regex = new Regex(@"(?<number>^\d\d)");
-
-                        if (regex.IsMatch(currentSubSetName))
-                        {
-                            Match match = regex.Match(currentSubSetName);
-                            currentPipelineNumber = match.Groups["number"].Value;
-                            prdDbg($"Strækning nr: {currentPipelineNumber}");
-                        }
-
-                        var enumSheets = subSet.GetSheetEnumerator();
-                        smComponent = enumSheets.Next();
-
-                        int idx = 0;
-
-                        while (true)
-                        {
-                            if (smComponent == null) break;
-                            //prdDbg(smComponent.GetTypeName());
-                            //prdDbg(smComponent.GetName());
-                            if (smComponent.GetTypeName() != "AcSmSheet") continue;
-
-                            sheet = smComponent as AcSmSheet;
-                            prdDbg("T: " + sheet.GetTitle());
-                            prdDbg("N: " + sheet.GetNumber());
-                            //layoutRef = sheet.GetLayout();
-
-                            ////Get the referenced layout
-                            //if (idx == 0)
-                            //{
-                            //    string dbPath = layoutRef.GetFileName();
-                            //    db = new Database(false, true);
-                            //    db.ReadDwgFile(dbPath, FileOpenMode.OpenForReadAndWriteNoShare, true, "");
-                            //    tx = db.TransactionManager.StartTransaction();
-
-                            //}
-
-                            //Build number
-                            currentSheetNumber++;
-                            currentSheetNumberString = currentSheetNumber.ToString("D3");
-
-                            string sheetNumber = $"{projectNumber}-{etapeNumber}-" +
-                                                 $"{sheetTypeNumber}{currentPipelineNumber}-" +
-                                                 $"{currentSheetNumberString}";
-
-                            prdDbg("Number: " + sheetNumber);
-
-                            //Build sheet name
-                            string currentSheetName = smComponent.GetName();
-
-                            //Clean up rests of stations
-                            regex = new Regex(@"\d(?<rest>\.\d\d\d)");
-                            if (regex.IsMatch(currentSheetName))
-                            {
-                                Match match = regex.Match(currentSheetName);
-                                foreach (System.Text.RegularExpressions.Group group in match.Groups)
-                                    if (group.Name == "rest")
-                                        currentSheetName = currentSheetName.Replace(group.Value, "");
-                            }
-
-                            regex = new Regex(@"(?<number>^\d+\s)");
-                            if (regex.IsMatch(currentSheetName))
-                                currentSheetName = regex.Replace(currentSheetName, "");
-                            currentSheetName = currentSheetName.Replace("+", "");
-
-                            prdDbg("Name: " + currentSheetName);
-
-                            string curTitle = sheet.GetTitle();
-
-                            curTitle = curTitle.Replace(sheetNumber, "");
-                            sheet.SetTitle(curTitle);
-
-                            //Change the number and name of sheet
-                            sheet.SetNumber(sheetNumber);
-                            sheet.SetTitle(currentSheetName);
-                            sheet.SetName(currentSheetName);
-
-                            //prdDbg("Layout name: " + layoutRef.GetName());
-                            //prdDbg("File name: " + layoutRef.GetFileName());
-
-                            idx++;
-                            smComponent = enumSheets.Next();
-                        }
-                        //Dispose of database and transaction
-                        //tx.Commit();
-                        //tx.Dispose();
-                        //db.Dispose();
-
-                        //Open the next sheet
-                        smComponent = enumSubSet.Next();
-                    }
-
-                    //Unlock database
-                    LockDatabase(ref ssDb, false);
-                    // Get the next open database and increment the counter 
-                    item = enumDatabase.Next();
-                }
-            }
-            else
-            {
-                customMessage = "No sheet sets are currently open.";
-            }
-
-            // Display the custom message 
-            //MessageBox.Show(customMessage);
-            prdDbg(customMessage);
-        }
-
-        // Step through all open sheet sets 
         [CommandMethod("RenameSheetsOLD")]
         [CommandMethod("RSSOLD")]
         public void renamesheetsOLDcallform()

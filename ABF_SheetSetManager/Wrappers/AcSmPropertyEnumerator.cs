@@ -10,7 +10,7 @@ using ACSMCOMPONENTS25Lib;
 using System.Collections;
 using System.Reflection;
 
-namespace ABF_SheetSetManager.Wrappers
+namespace SheetSetManager.Wrappers
 {
     internal class AcSmPropertyEnumerator : IEnumerable<AcSmProperty>, IEnumerator<AcSmProperty>
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Autodesk.AutoCAD.Runtime;
 using ACSMCOMPONENTS25Lib;
 
-namespace ABF_SheetSetManager
+namespace SheetSetManager
 {
     public class MySSmEventHandler : IAcSmEvents
     {

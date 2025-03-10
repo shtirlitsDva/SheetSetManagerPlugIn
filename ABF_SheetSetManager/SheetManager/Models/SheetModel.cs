@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABF_SheetSetManager.SheetManager.Models
+namespace SheetSetManager.SheetManager.Models
 {
     internal partial class SheetModel : ObservableObject
     {

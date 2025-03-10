@@ -8,13 +8,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ABF_SheetSetManager.SheetManager.Models;
-using ABF_SheetSetManager.Wrappers;
-using ABF_SheetSetManager.SheetManager.Interop;
+using SheetSetManager.SheetManager.Models;
+using SheetSetManager.Wrappers;
+using SheetSetManager.SheetManager.Interop;
 using ACSMCOMPONENTS25Lib;
 
 
-namespace ABF_SheetSetManager.SheetManager.ViewModels
+namespace SheetSetManager.SheetManager.ViewModels
 {
     internal partial class SheetSetViewModel : ObservableObject
     {
@@ -29,7 +29,7 @@ namespace ABF_SheetSetManager.SheetManager.ViewModels
 
         private void LoadSheets()
         {
-            var sSet = SheetSetManager.GetCurrentSheetSet();
+            var sSet = Interop.SheetSetManager.GetCurrentSheetSet();
 
             var ssEnum = new AcSmComEnumerator(sSet.GetSheetEnumerator());
 
@@ -62,6 +62,7 @@ namespace ABF_SheetSetManager.SheetManager.ViewModels
                             case "Godkendt": model.ApprovedBy = prop.Value.GetValue(); break;
                             case "Gælder for": model.Scale = prop.Value.GetValue(); break;
                             case "Kontrol": model.CheckedBy = prop.Value.GetValue(); break;
+                            case "Målestok ex 1:50": model.Scale = prop.Value.GetValue(); break;
                         }
 
                         if (prop.Name.StartsWith("Rev "))

@@ -1,4 +1,4 @@
-﻿namespace ABF_SheetSetManager
+﻿namespace SheetSetManager
 {
     partial class Form_RevisionManager
     {

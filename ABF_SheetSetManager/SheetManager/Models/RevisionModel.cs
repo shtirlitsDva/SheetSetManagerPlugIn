@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace ABF_SheetSetManager.SheetManager.Models
+namespace SheetSetManager.SheetManager.Models
 {
     internal partial class RevisionModel : ObservableObject
     {
@@ -23,7 +23,8 @@ namespace ABF_SheetSetManager.SheetManager.Models
         [ObservableProperty]
         private string _drawnBy;
 
-        public bool IsValid => !string.IsNullOrEmpty(RevisionLetter) ||
+        //Revision letter must not be checked for validity as it is always present
+        public bool IsValid => //!string.IsNullOrEmpty(RevisionLetter) ||
                                !string.IsNullOrEmpty(Date) ||
                                !string.IsNullOrEmpty(Description) ||
                                !string.IsNullOrEmpty(ApprovedBy) ||

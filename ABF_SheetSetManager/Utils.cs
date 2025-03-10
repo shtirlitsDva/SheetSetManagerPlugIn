@@ -22,9 +22,9 @@ using ObjectId = Autodesk.AutoCAD.DatabaseServices.ObjectId;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 using BlockReference = Autodesk.AutoCAD.DatabaseServices.BlockReference;
 using ObjectIdCollection = Autodesk.AutoCAD.DatabaseServices.ObjectIdCollection;
-using ABF_SheetSetManager.SheetManager.Interop;
+using SheetSetManager.SheetManager.Interop;
 
-namespace ABF_SheetSetManager
+namespace SheetSetManager
 {
     public static class Utils
     {

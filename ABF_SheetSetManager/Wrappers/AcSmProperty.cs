@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ABF_SheetSetManager.Wrappers
+namespace SheetSetManager.Wrappers
 {
     internal struct AcSmProperty
     {

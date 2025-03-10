@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ABF_SheetSetManager.SheetManager.Interop
+namespace SheetSetManager.SheetManager.Interop
 {
     public static class AcContext
     {

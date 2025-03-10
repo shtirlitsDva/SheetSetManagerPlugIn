@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ABF_SheetSetManager", "ABF_SheetSetManager\ABF_SheetSetManager.csproj", "{D1B49369-4554-488A-B3E5-AAB093163663}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetSetManager", "ABF_SheetSetManager\SheetSetManager.csproj", "{D1B49369-4554-488A-B3E5-AAB093163663}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
