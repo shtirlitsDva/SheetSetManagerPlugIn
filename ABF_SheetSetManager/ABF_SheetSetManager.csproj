@@ -36,6 +36,16 @@
 		<DebugType>full</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="SheetManager\Helpers\**" />
+	  <Compile Remove="SheetManager\Services\**" />
+	  <EmbeddedResource Remove="SheetManager\Helpers\**" />
+	  <EmbeddedResource Remove="SheetManager\Services\**" />
+	  <None Remove="SheetManager\Helpers\**" />
+	  <None Remove="SheetManager\Services\**" />
+	  <Page Remove="SheetManager\Helpers\**" />
+	  <Page Remove="SheetManager\Services\**" />
+	</ItemGroup>
+	<ItemGroup>
 		<COMReference Include="AXDBLib">
 			<Guid>{39FFAA00-8623-488F-8C53-DD3B0B7A464F}</Guid>
 			<VersionMajor>1</VersionMajor>
@@ -73,9 +83,5 @@
 			<HintPath>C:\Program Files\Autodesk\AutoCAD 2025\acmgd.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="SheetManager\Helpers\" />
-	  <Folder Include="SheetManager\Services\" />
 	</ItemGroup>
 </Project>
