@@ -14,7 +14,10 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 
 using static ABF_SheetSetManager.Utils;
+using ABF_SheetSetManager.Wrappers;
 using System.IO;
+using ABF_SheetSetManager.SheetManager.Interop;
+using ABF_SheetSetManager.SheetManager.Views;
 
 // Instructions:
 // 1) Add references: 
@@ -1488,60 +1491,13 @@ namespace ABF_SheetSetManager
         }
 
         [CommandMethod("MANAGEREVISIONSONSHEETS")]
+        [CommandMethod("MROS")]
         public void managerevisionsonsheets()
         {
-            // Get a reference to the Sheet Set Manager object 
-            IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
-            // Get the loaded databases 
-            IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
+            AcContext.Current = SynchronizationContext.Current;
 
-            #region Safeguarding for mulitple open databases
-            //Safeguarding for multiple open databases
-            int dbCount = 0;
-            IAcSmPersist item = enumDatabase.Next();
-            while (item != null)
-            {
-                dbCount++;
-                item = enumDatabase.Next();
-            }
-            if (dbCount > 1)
-            {
-                prdDbg("Multiple databases open! Only one database must be open (.dst file)!");
-                return;
-            }
-            if (dbCount < 1)
-            {
-                prdDbg("No database is open! Open one and only one database (.dst file)!");
-            }
-            #endregion
-
-            #region Gather data
-            enumDatabase.Reset();
-            item = enumDatabase.Next();
-            AcSmDatabase ssDb = item.GetDatabase();
-            AcSmSheetSet sSet = ssDb.GetSheetSet();
-
-            if (LockDatabase(ref ssDb, true) != true) return;
-
-            //Get sheet enumerator
-            IAcSmEnumComponent enumSubSet = sSet.GetSheetEnumerator();
-            IAcSmComponent smComponent = enumSubSet.Next();
-            IAcSmSubset subSet;
-            IAcSmSheet sheet;
-
-            while (smComponent != null)
-            {
-
-            }
-
-
-            #endregion
-
-
-
-            //MessageBox.Show(string.Join(Environment.NewLine, form.PropsAndValues.Select(x => x.Key + " -> " + x.Value)));
-
-
+            var window = new SheetManagerWindow();
+            window.Show();
         }
 
         // Create a new sheet set with custom subsets

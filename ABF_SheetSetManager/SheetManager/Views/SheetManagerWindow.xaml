@@ -1,0 +1,70 @@
+﻿<Window x:Class="ABF_SheetSetManager.SheetManager.Views.SheetManagerWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ABF_SheetSetManager.SheetManager.Views"
+        mc:Ignorable="d"
+        Title="Sheet Manager" Height="600" Width="900">
+
+    <Grid>
+        <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding SelectedSheet}"
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                  IsReadOnly="False">
+            <DataGrid.Columns>
+
+                <!-- Checkbox for selection -->
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected}" Header="✔" Width="40"/>
+
+                <!-- Sheet General Information -->
+                <DataGridTextColumn Binding="{Binding SheetNumber}" Header="Sheet #" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Title1}" Header="Title 1" Width="150"/>
+                <DataGridTextColumn Binding="{Binding Title2}" Header="Title 2" Width="150"/>
+                <DataGridTextColumn Binding="{Binding ApprovedBy}" Header="Approved By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding CheckedBy}" Header="Checked By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding DrawnBy}" Header="Drawn By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Scale}" Header="Scale" Width="80"/>
+
+                <!-- Latest Revision Information -->
+                <DataGridTextColumn Binding="{Binding LatestRevision.RevisionLetter}" Header="Rev #" Width="50"/>
+                <DataGridTextColumn Binding="{Binding LatestRevision.Date}" Header="Rev Date" Width="100"/>
+                <DataGridTextColumn Binding="{Binding LatestRevision.Description}" Header="Rev Description" Width="200"/>
+
+                <!-- Actions for Revisions -->
+                <DataGridTemplateColumn Header="Actions" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="+" Command="{Binding DataContext.AddRevisionToSelected, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                <Button Content="-" Command="{Binding DataContext.RemoveRevisionFromSelected, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding LatestRevision}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+            <!-- Row Details: Expand to show all revisions -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gray" BorderThickness="1" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="All Revisions:" FontWeight="Bold"/>
+                            <DataGrid ItemsSource="{Binding Revisions}" AutoGenerateColumns="False" CanUserAddRows="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding RevisionLetter}" Header="Rev #" Width="50"/>
+                                    <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="200"/>
+                                    <DataGridTextColumn Binding="{Binding ApprovedBy}" Header="Approved By" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding CheckedBy}" Header="Checked By" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding DrawnBy}" Header="Drawn By" Width="100"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+
+        </DataGrid>
+    </Grid>
+</Window>
