@@ -36,6 +36,33 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
+
+        <Style.Triggers>
+            <!-- Change background if the checkbox (IsSelected) is checked -->
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="#556677"/>
+                <!-- Custom checked row color -->
+            </DataTrigger>
+
+            <!-- Ensure the selection color overrides the checked color -->
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#2A75B3"/>
+                <!-- Default selection color -->
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
+    <!-- DataGrid Row Header -->
+    <Style TargetType="DataGridRowHeader">
+        <Setter Property="Background" Value="#3b4453"/>
+        <!-- Match DataGrid Background -->
+        <Setter Property="BorderBrush" Value="#3b4453"/>
+        <!-- Match the border -->
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Width" Value="20"/>
+        <!-- Adjust width if needed -->
     </Style>
 
     <!-- Buttons -->

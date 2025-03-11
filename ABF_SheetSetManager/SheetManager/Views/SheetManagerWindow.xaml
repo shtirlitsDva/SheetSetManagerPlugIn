@@ -16,14 +16,35 @@
     <Grid>
         <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding SelectedSheet}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                  IsReadOnly="False">
+                  IsReadOnly="False" KeyDown="DataGrid_KeyDown"
+                  RowStyle="{StaticResource {x:Type DataGridRow}}"
+                  Sorting="DataGrid_Sorting"
+                  >
             <DataGrid.Columns>
 
                 <!-- Checkbox for selection -->
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected}" Header="✔" Width="40"/>
+                <DataGridTemplateColumn Width="40">
+                    <!-- Header Checkbox: Clicks select/deselect all -->
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox x:Name="SelectAllCheckBox"
+                  Click="SelectAllCheckBox_Click"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"/>
+                    </DataGridTemplateColumn.Header>
+
+                    <!-- Row Checkbox: Prevents row expansion -->
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      PreviewMouseDown="CheckBox_PreviewMouseDown"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <!-- Sheet General Information -->
-                <DataGridTextColumn Binding="{Binding SheetNumber}" Header="Sheet #" Width="100"/>
+                <DataGridTextColumn Binding="{Binding SheetNumber}" Header="Sheet #" Width="150"/>
                 <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
                 <DataGridTextColumn Binding="{Binding Title1}" Header="Title 1" Width="150"/>
                 <DataGridTextColumn Binding="{Binding Title2}" Header="Title 2" Width="150"/>
@@ -35,7 +56,7 @@
                 <!-- Latest Revision Information -->
                 <DataGridTextColumn Binding="{Binding LatestRevision.RevisionLetter}" Header="Rev #" Width="50"/>
                 <DataGridTextColumn Binding="{Binding LatestRevision.Date}" Header="Rev Date" Width="100"/>
-                <DataGridTextColumn Binding="{Binding LatestRevision.Description}" Header="Rev Description" Width="200"/>
+                <DataGridTextColumn Binding="{Binding LatestRevision.Description}" Header="Rev Description" Width="300"/>
 
                 <!-- Actions for Revisions -->
                 <DataGridTemplateColumn Header="Actions" Width="80">
@@ -60,7 +81,7 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding RevisionLetter}" Header="Rev #" Width="50"/>
                                     <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="200"/>
+                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="300"/>
                                     <DataGridTextColumn Binding="{Binding ApprovedBy}" Header="Approved By" Width="100"/>
                                     <DataGridTextColumn Binding="{Binding CheckedBy}" Header="Checked By" Width="100"/>
                                     <DataGridTextColumn Binding="{Binding DrawnBy}" Header="Drawn By" Width="100"/>
