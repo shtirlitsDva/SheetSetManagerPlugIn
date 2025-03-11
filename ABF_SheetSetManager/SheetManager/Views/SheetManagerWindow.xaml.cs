@@ -62,5 +62,16 @@ namespace SheetSetManager.SheetManager.Views
         {
             
         }
+
+        private void SelectAllCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox selectAllCheckBox && DataContext is SheetSetViewModel viewModel)
+            {
+                foreach (var sheet in viewModel.Sheets)
+                {
+                    sheet.IsSelected = !sheet.IsSelected;
+                }
+            }
+        }
     }
 }
