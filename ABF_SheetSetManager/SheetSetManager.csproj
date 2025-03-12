@@ -38,9 +38,6 @@
 		<DebugType>full</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="SheetSetManager.dll.config" />
-	</ItemGroup>
-	<ItemGroup>
 		<COMReference Include="AXDBLib">
 			<Guid>{39FFAA00-8623-488F-8C53-DD3B0B7A464F}</Guid>
 			<VersionMajor>1</VersionMajor>
@@ -59,11 +56,6 @@
 			<Isolated>false</Isolated>
 			<EmbedInteropTypes>true</EmbedInteropTypes>
 		</COMReference>
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="SheetSetManager.dll.config">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
