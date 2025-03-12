@@ -11,9 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
+//using TextBox = HandyControl.Controls.TextBox;
 using Window = HandyControl.Controls.Window;
 
 
@@ -61,6 +63,37 @@ namespace SheetSetManager.SheetManager.Views
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
             
+        }
+
+        private void SelectAllCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox selectAllCheckBox && DataContext is SheetSetViewModel viewModel)
+            {
+                foreach (var sheet in viewModel.Sheets)
+                {
+                    sheet.IsSelected = !sheet.IsSelected;
+                }
+            }
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Row.Item is SheetModel sheet && e.Column is DataGridTextColumn column)
+            {
+                if (e.EditingElement is System.Windows.Controls.TextBox textBox)
+                {
+                    string newValue = textBox.Text;
+                    string propertyName = ((Binding)column.ClipboardContentBinding)?.Path?.Path;
+                    
+                    if (!string.IsNullOrEmpty(propertyName))
+                    {
+                        if (DataContext is SheetSetViewModel viewModel)
+                        {
+                            viewModel.OnCellEdit(sheet, propertyName, newValue);
+                        }
+                    }
+                }
+            }
         }
     }
 }

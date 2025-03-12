@@ -12,10 +12,11 @@ namespace SheetSetManager.SheetManager.Interop
 {
     internal class SheetSetManager
     {
-        internal static AcSmSheetSet GetCurrentSheetSet()
+        internal static AcSmDatabase GetCurrentDatabase()
         {
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
+            
             // Get the loaded databases 
             IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
 
@@ -44,8 +45,7 @@ namespace SheetSetManager.SheetManager.Interop
             enumDatabase.Reset();
             item = enumDatabase.Next();
             AcSmDatabase ssDb = item.GetDatabase();
-            AcSmSheetSet sSet = ssDb.GetSheetSet();
-            return sSet;
+            return ssDb;
             #endregion
         }
     }

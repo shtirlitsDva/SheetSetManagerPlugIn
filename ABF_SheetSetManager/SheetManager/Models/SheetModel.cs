@@ -14,6 +14,7 @@ namespace SheetSetManager.SheetManager.Models
     internal partial class SheetModel : ObservableObject
     {
         [ObservableProperty] private bool _isSelected;
+        [ObservableProperty] private bool _isEdited;
         [ObservableProperty] private string _sheetNumber;
         [ObservableProperty] private string _date;
         [ObservableProperty] private string _title1;
@@ -29,9 +30,17 @@ namespace SheetSetManager.SheetManager.Models
             set => _oid = value;
         }
 
+        public List<string> Changes { get; set; } = new();
+
         public ObservableCollection<RevisionModel> Revisions { get; } = new();
 
         public RevisionModel LatestRevision => Revisions.Count > 0 ? Revisions[^1] : null;
+
+        public void MarkAsEdited(string propertyName, string newValue)
+        {
+            IsEdited = true;
+            Changes.Add($"{propertyName}: {newValue}");
+        }
 
         public void AddRevision()
         {

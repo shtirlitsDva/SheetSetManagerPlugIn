@@ -20,6 +20,7 @@ using SheetSetManager.SheetManager.Interop;
 using SheetSetManager.SheetManager.Views;
 using System.Reflection;
 
+#region Instructions
 // Instructions:
 // 1) Add references: 
 // AcCoreMgd
@@ -34,7 +35,8 @@ using System.Reflection;
 
 // 4) Add Using statements
 
-// 5) Make sure references do not copy local: Select Reference > right click > properties > Copy Local = False
+// 5) Make sure references do not copy local: Select Reference > right click > properties > Copy Local = False 
+#endregion
 
 [assembly: CommandClass(typeof(SheetSetManager.Commands))]
 

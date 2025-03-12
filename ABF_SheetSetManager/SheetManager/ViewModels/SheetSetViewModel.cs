@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Collections.ObjectModel;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
 using SheetSetManager.SheetManager.Interop;
 using ACSMCOMPONENTS25Lib;
+
+using SheetSetManager.SheetManager.Views;
 
 
 namespace SheetSetManager.SheetManager.ViewModels
@@ -21,6 +22,8 @@ namespace SheetSetManager.SheetManager.ViewModels
         public ObservableCollection<SheetModel> Sheets { get; } = new();
 
         [ObservableProperty] private SheetModel _selectedSheet;
+        [ObservableProperty] private bool _hasPendingChanges;
+        private AcSmDatabase _currentDatabase;
 
         public SheetSetViewModel()
         {
@@ -29,8 +32,13 @@ namespace SheetSetManager.SheetManager.ViewModels
 
         private void LoadSheets()
         {
-            var sSet = Interop.SheetSetManager.GetCurrentSheetSet();
+            Sheets.Clear();
 
+            var ssDb = Interop.SheetSetManager.GetCurrentDatabase();
+            _currentDatabase = ssDb;
+            if (ssDb == null) return;
+
+            var sSet = ssDb.GetSheetSet();
             var ssEnum = new AcSmComEnumerator(sSet.GetSheetEnumerator());
 
             foreach (var ssComp in ssEnum)
@@ -93,6 +101,57 @@ namespace SheetSetManager.SheetManager.ViewModels
 
                     Sheets.Add(model);
                 }
+            }
+        }
+
+        [RelayCommand]
+        private void ApplyChanges()
+        {
+            var modifiedSheets = Sheets.Where(s => s.IsEdited).ToList();
+            if (modifiedSheets.Count == 0) return;
+
+            var cw = new ApplyConfirmationWindow();
+
+            foreach (var sheet in Sheets.Where(s => s.IsEdited))
+            {
+                var s = sheet.Oid.GetPersistObject() as AcSmSheet;
+                if (s == null) continue;
+                
+
+            }
+
+            HasPendingChanges = false;
+        }
+
+        [RelayCommand]
+        private void ResetSheets()
+        {
+            LoadSheets(); // ✅ Reload sheets from database
+            HasPendingChanges = false;
+        }
+
+        public void OnCellEdit(SheetModel sheet, string propertyName, string newValue)
+        {
+            sheet.MarkAsEdited(propertyName, newValue);
+            HasPendingChanges = true;
+
+            // ✅ Propagate changes to all selected sheets
+            foreach (var s in Sheets.Where(s => s.IsSelected))
+            {
+                switch (propertyName)
+                {
+                    case "SheetNumber": s.SheetNumber = newValue; break;
+                    case "Date": s.Date = newValue; break;
+                    case "Title1": s.Title1 = newValue; break;
+                    case "Title2": s.Title2 = newValue; break;
+                    case "ApprovedBy": s.ApprovedBy = newValue; break;
+                    case "CheckedBy": s.CheckedBy = newValue; break;
+                    case "DrawnBy": s.DrawnBy = newValue; break;
+                    case "Scale": s.Scale = newValue; break;
+                }
+
+                if (sheet.Oid != s.Oid)
+                    s.MarkAsEdited(propertyName, newValue);
             }
         }
 
