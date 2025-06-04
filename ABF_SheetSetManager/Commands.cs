@@ -445,14 +445,23 @@ namespace SheetSetManager
                     //Lock database
                     if (LockDatabase(ref ssDb, true) != true) return;
 
+                    int safetyCounter = 0;
                     while (true)
                     {
+                        safetyCounter++;
+                        if (safetyCounter > 1000)
+                        {
+                            prdDbg("Safety counter exceeded 1000! Breaking loop to avoid infinite loop.");
+                            break;
+                        }
                         if (smComponent == null) break;
 
+#if DEBUG
                         //Always test to see what kind of object you get!
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         //prdDbg(smComponent.GetTypeName());
-                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                        
+#endif
                         if (smComponent.GetTypeName() != "AcSmSubset") continue;
                         subSet = smComponent as AcSmSubset;
                         string currentSubSetName = subSet.GetName();
