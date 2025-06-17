@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SheetSetManager.SheetManager.Interfaces
 {
-    internal interface IProperty
+    public interface IProperty : INotifyPropertyChanged
     {
-        internal string Name { get; }
-        internal string Value { get; set; }
-        internal void ApplyChange();
+        string Name { get; }
+        string? Value { get; set; }
+        void ApplyChange();
+        bool ChangePending { get; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using SheetSetManager.SheetManager.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+using SheetSetManager.SheetManager.Interfaces;
 
 using System;
 using System.Collections.Generic;
@@ -8,23 +10,26 @@ using System.Threading.Tasks;
 
 namespace SheetSetManager.SheetManager.Models
 {
-    internal abstract class PropertyBase : IProperty
+    public abstract class PropertyBase : ObservableObject, IProperty
     {
-        internal string Name { get; }
+        public string Name { get; }
         private string? _value;
-        internal string? Value
+        public string? Value
         {
             get => _value;
-            set { _value = value; ChangePending = true; }
-        }
-        internal bool ChangePending { get; set; } = false;
-        internal abstract void ApplyChanges();
-        protected void ApplyChangeBase()
+            set { if (SetProperty(ref _value, value)) ChangePending = true; }
+        }        
+
+        public bool ChangePending { get; private set; } = false;
+        public void ApplyChange()
         {
-            ApplyChanges();
+            if (!ChangePending) return;
+            ImplementButDoNotCall_ApplyChange();
             ChangePending = false;
         }
-        protected PropertyBase(string name)
+        protected abstract void ImplementButDoNotCall_ApplyChange();
+        
+        public PropertyBase(string name)
         {
             Name = name;
         }

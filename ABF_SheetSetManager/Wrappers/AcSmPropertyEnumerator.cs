@@ -12,17 +12,19 @@ using System.Reflection;
 
 namespace SheetSetManager.Wrappers
 {
-    internal class AcSmPropertyEnumerator : IEnumerable<AcSmProperty>, IEnumerator<AcSmProperty>
+    internal class AcSmPropertyEnumerator : 
+        IEnumerable<(string Name, AcSmCustomPropertyValue Value)>,
+        IEnumerator<(string Name, AcSmCustomPropertyValue Value)>
     {
         private readonly IAcSmEnumProperty _enumerator;
-        private AcSmProperty _current;
+        private (string Name, AcSmCustomPropertyValue Value)  _current;
 
         public AcSmPropertyEnumerator(IAcSmEnumProperty enumerator)
         {
             _enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
         }
 
-        public AcSmProperty Current => _current;
+        public (string Name, AcSmCustomPropertyValue Value) Current => _current;
         object IEnumerator.Current => _current;
 
         public bool MoveNext()
@@ -33,7 +35,7 @@ namespace SheetSetManager.Wrappers
             
             if (!string.IsNullOrEmpty(name))
             {
-                _current = new AcSmProperty(name, value);
+                _current = (name, value);
                 return true;
             }
 
@@ -47,7 +49,7 @@ namespace SheetSetManager.Wrappers
 
         public void Dispose() { }
 
-        public IEnumerator<AcSmProperty> GetEnumerator() => this;
+        public IEnumerator<(string Name, AcSmCustomPropertyValue Value)> GetEnumerator() => this;
         IEnumerator IEnumerable.GetEnumerator() => this;
     }
 }

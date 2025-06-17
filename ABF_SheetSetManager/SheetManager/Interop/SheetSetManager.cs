@@ -20,7 +20,7 @@ namespace SheetSetManager.SheetManager.Interop
             #region Init SSM database
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
-
+            
             // Get the loaded databases 
             IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
 

@@ -1,60 +1,26 @@
 ﻿using ACSMCOMPONENTS25Lib;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-
-using SheetSetManager.SheetManager.Interfaces;
-using SheetSetManager.Wrappers;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using SheetSetManager.SheetManager.Managers;
+using System.Security.RightsManagement;
 
 namespace SheetSetManager.SheetManager.Models
 {
     internal partial class SheetModel : ObservableObject
     {
-        [ObservableProperty] private bool _isSelected = false;
-        [ObservableProperty] private bool _isEdited = false;
-        [ObservableProperty] private IProperty _sheetNumber;
-        [ObservableProperty] private IProperty _date;
-        [ObservableProperty] private IProperty _title1;
-        [ObservableProperty] private IProperty _title2;
-        [ObservableProperty] private IProperty _approvedBy;
-        [ObservableProperty] private IProperty _checkedBy;
-        [ObservableProperty] private IProperty _drawnBy;
-        [ObservableProperty] private IProperty _scale;
-        
+        public PropertyManager Properties { get; }
+        public RevisionManager Revisions { get; }
+
         public SheetModel(AcSmSheet comSheet)
         {
             Oid = comSheet.GetObjectId();
 
-            var sheetProperties = new AcSmPropertyEnumerator(
-                comSheet.GetCustomPropertyBag().GetPropertyEnumerator());
-
-            foreach (var prop in sheetProperties)
-            {
-                switch (prop.Name)
-                {
-                    case "1 Tegner": DrawnBy = prop.Value.GetValue(); break;
-                    case "Dato": Date = prop.Value.GetValue(); break;
-                    case "Emnelinje 1": Title1 = prop.Value.GetValue(); break;
-                    case "Emnelinje 2": Title2 = prop.Value.GetValue(); break;
-                    case "Godkendt": ApprovedBy = prop.Value.GetValue(); break;
-                    case "Gælder for": Scale = prop.Value.GetValue(); break;
-                    case "Kontrol": CheckedBy = prop.Value.GetValue(); break;
-                    case "Målestok ex 1:50": Scale = prop.Value.GetValue(); break;
-                }
-            }
+            Properties = new PropertyManager(comSheet);
+            Revisions = new RevisionManager(comSheet);
         }
 
-        public IAcSmObjectId Oid { get; }        
-
-        public List<string> Changes { get; set; } = new();
-
-        public ObservableCollection<RevisionModel> Revisions { get; } = new();
+        public IAcSmObjectId Oid { get; }
+        
 
         public RevisionModel LatestRevision => Revisions.Count > 0 ? Revisions[^1] : null;
 

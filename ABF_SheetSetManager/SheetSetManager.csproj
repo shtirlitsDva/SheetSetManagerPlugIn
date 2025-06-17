@@ -9,6 +9,7 @@
 		<Nullable>enable</Nullable>
 		<PlatformTarget>x64</PlatformTarget>
 		<Platforms>x64</Platforms>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 	<PropertyGroup>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -25,6 +26,7 @@
 			None
 		</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<RootNamespace>SheetSetManager</RootNamespace>
+		<SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Platform)' == 'x64' ">
 		<DebugSymbols>true</DebugSymbols>
