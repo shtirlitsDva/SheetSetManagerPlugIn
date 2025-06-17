@@ -37,7 +37,7 @@
                   IsReadOnly="False" KeyDown="DataGrid_KeyDown"
                   RowStyle="{StaticResource {x:Type DataGridRow}}"
                   Sorting="DataGrid_Sorting"
-                  CellEditEnding="DataGrid_CellEditEnding"
+                  CellEditEnding="DataGrid_CellEditEnding" SelectionChanged="DataGrid_SelectionChanged"
                   >
             <DataGrid.Columns>
 

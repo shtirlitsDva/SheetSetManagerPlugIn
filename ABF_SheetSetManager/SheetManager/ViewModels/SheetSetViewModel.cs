@@ -13,6 +13,7 @@ using SheetSetManager.SheetManager.Interop;
 using ACSMCOMPONENTS25Lib;
 
 using SheetSetManager.SheetManager.Views;
+using SheetSetManager.SheetManager.Interop;
 
 
 namespace SheetSetManager.SheetManager.ViewModels
@@ -23,7 +24,7 @@ namespace SheetSetManager.SheetManager.ViewModels
 
         [ObservableProperty] private SheetModel _selectedSheet;
         [ObservableProperty] private bool _hasPendingChanges;
-        private AcSmDatabase _currentDatabase;
+        private Interop.SheetSetManager _sheetSetManager = new();        
 
         public SheetSetViewModel()
         {
@@ -32,7 +33,6 @@ namespace SheetSetManager.SheetManager.ViewModels
 
         private void LoadSheets()
         {
-            Sheets.Clear();
 
             var ssDb = Interop.SheetSetManager.GetCurrentDatabase();
             _currentDatabase = ssDb;
@@ -111,6 +111,8 @@ namespace SheetSetManager.SheetManager.ViewModels
             if (modifiedSheets.Count == 0) return;
 
             var cw = new ApplyConfirmationWindow();
+            cw.ShowDialog();
+            if (!cw.IsConfirmed) return; // User cancelled
 
             foreach (var sheet in Sheets.Where(s => s.IsEdited))
             {

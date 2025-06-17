@@ -9,6 +9,7 @@ namespace SheetSetManager.SheetManager.Interop
 {
     public static class AcContext
     {
-        public static SynchronizationContext Current { get; set; }
+        public static SynchronizationContext? Current { get; set; } = null;
+        //SynchronizationContext.Current;
     }
 }

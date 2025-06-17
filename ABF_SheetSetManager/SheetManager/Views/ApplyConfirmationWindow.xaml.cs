@@ -23,17 +23,17 @@ namespace SheetSetManager.SheetManager.Views
     /// <summary>
     /// Interaction logic for ApplyConfirmationWindow.xaml
     /// </summary>
-    internal partial class ApplyConfirmationWindow : Window
+    public partial class ApplyConfirmationWindow : Window
     {
         ApplyConfirmationViewModel vm = new();
-        public bool IsConfirmed { get; private set; }
-        public ApplyConfirmationWindow()
+        internal bool IsConfirmed { get; private set; }
+        internal ApplyConfirmationWindow()
         {
             InitializeComponent();
             DataContext = vm;
         }
 
-        public void SetModifiedSheets(List<SheetModel> modifiedSheets)
+        internal void SetModifiedSheets(List<SheetModel> modifiedSheets)
         {
             vm.LoadModifiedSheets(modifiedSheets);
         }

@@ -28,7 +28,8 @@ namespace SheetSetManager
 {
     public static class Utils
     {
-        public static void prdDbg(string msg = "") => Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("\n" + msg);
+        public static void prdDbg(string msg = "") => 
+            Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("\n" + msg);
         public static void prdDbg(object obj)
         {
             if (obj is SystemException ex1) prdDbg(obj.ToString().WrapThis(90));
