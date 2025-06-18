@@ -12,15 +12,21 @@ namespace SheetSetManager.SheetManager.Interop
 {
     internal class SheetSetManager
     {
-        internal static AcSmDatabase? _db = null;
+        private AcSmDatabase? _db = null;
         private SheetsManager _sheets = new();
+        public SheetsManager Sheets => _sheets;
 
-        internal void InitializeDatabase()
+        public SheetSetManager()
+        {
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
         {
             #region Init SSM database
             // Get a reference to the Sheet Set Manager object 
             IAcSmSheetSetMgr sheetSetManager = new AcSmSheetSetMgr();
-            
+
             // Get the loaded databases 
             IAcSmEnumDatabase enumDatabase = sheetSetManager.GetDatabaseEnumerator();
 
@@ -45,23 +51,33 @@ namespace SheetSetManager.SheetManager.Interop
             }
             #endregion
 
-            #region Get the Sheet Set
+
             enumDatabase.Reset();
             item = enumDatabase.Next();
             AcSmDatabase ssDb = item.GetDatabase();
-            _currentDatabase = ssDb; 
-            #endregion
-            #endregion
+            _db = ssDb;
 
-            if (_currentDatabase == null)
+            if (_db == null)
             {
                 prtDbg("No database is open! Open one and only one database (.dst file)!");
                 throw new Exception("No database is open! Open one and only one database (.dst file)!");
             }
 
             prtDbg("Sheet Set Manager database initialized successfully.");
+            #endregion            
+        }
 
-            var sSet = _currentDatabase.GetSheetSet();
+        internal void LoadSheets()
+        {
+            if (_db == null)
+            {
+                prtDbg("Database is not initialized. Cannot load sheets.");
+                return;
+            }            
+
+            Sheets.Clear(); // Clear existing sheets
+
+            var sSet = _db.GetSheetSet();
             var ssEnum = new AcSmComEnumerator(sSet.GetSheetEnumerator());
 
             foreach (var ssComp in ssEnum)
@@ -73,10 +89,10 @@ namespace SheetSetManager.SheetManager.Interop
                 foreach (var sbsComp in subsetEnum)
                 {
                     if (sbsComp.GetTypeName() != "AcSmSheet") continue;
-                    AcSmSheet sheet = (AcSmSheet)sbsComp;                    
+                    AcSmSheet sheet = (AcSmSheet)sbsComp;
 
                     var sheetModel = new SheetModel(sheet);
-                                  
+
                     _sheets.Add(sheetModel);
                 }
             }

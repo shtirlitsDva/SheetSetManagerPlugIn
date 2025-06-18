@@ -2,22 +2,27 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-using SheetSetManager.SheetManager.Interfaces;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 
 namespace SheetSetManager.SheetManager.Managers
 {
-    public partial class RevisionManager : ObservableObject, IList<RevisionModel>
+    public partial class RevisionManager :
+        ObservableObject, IList<RevisionModel>,
+        INotifyCollectionChanged, INotifyPropertyChanged
     {
         private readonly ObservableCollection<RevisionModel> _revisions = new();
-        
+
+        public ICollectionView ValidRevisions { get; }
+
         [ObservableProperty]
         private RevisionModel? _latestRevision;
 
@@ -25,6 +30,15 @@ namespace SheetSetManager.SheetManager.Managers
 
         public RevisionManager(AcSmSheet comSheet)
         {
+            //Implement wpf stuff
+            _revisions.CollectionChanged += (_, e) => CollectionChanged?.Invoke(this, e);
+            ((INotifyPropertyChanged)_revisions).PropertyChanged += (_, e) =>
+            {
+                // propagate only those the UI actually cares about
+                if (e.PropertyName is "Count" or "Item[]") OnPropertyChanged(e.PropertyName);
+            };
+
+            //Read the data
             _sheetId = comSheet.GetObjectId();
 
             var propertyBag = comSheet.GetCustomPropertyBag();
@@ -37,18 +51,28 @@ namespace SheetSetManager.SheetManager.Managers
                 .GroupBy(p => p.Name.Split(' ')[1])
                 .OrderBy(g => g.Key);
 
-            List<RevisionModel> revisions = new List<RevisionModel>();
             foreach (var group in query)
             {
                 var revision = new RevisionModel(group.ToList());
-                revisions.Add(revision);                
+                AttachRevision(revision);
+                this.Add(revision);
             }
 
-            // Ensure the revisions are sorted by revision letter
-            _revisions = new(revisions.OrderBy(x => x.RevisionLetter.Value));
-
             LatestRevision = _revisions.LastOrDefault(x => x.IsValid);
+
+            ValidRevisions = CollectionViewSource.GetDefaultView(_revisions);
+            ValidRevisions.Filter = r => ((RevisionModel)r).IsValid;
         }
+
+        private void AttachRevision(RevisionModel rev) => rev.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(RevisionModel.IsValid)) ValidRevisions.Refresh();
+        };
+
+        #region ▬▬▬ events ▬▬▬
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        #endregion
+
         #region IList implementation
         public int Count => _revisions.Count;
 

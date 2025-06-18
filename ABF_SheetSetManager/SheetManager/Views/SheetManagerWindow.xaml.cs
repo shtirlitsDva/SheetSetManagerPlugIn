@@ -18,8 +18,6 @@ using System.Windows.Media;
 //using TextBox = HandyControl.Controls.TextBox;
 using Window = HandyControl.Controls.Window;
 
-
-
 namespace SheetSetManager.SheetManager.Views
 {
     /// <summary>
@@ -74,26 +72,6 @@ namespace SheetSetManager.SheetManager.Views
                     sheet.IsSelected = !sheet.IsSelected;
                 }
             }
-        }
-
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            if (e.Row.Item is SheetModel sheet && e.Column is DataGridTextColumn column)
-            {
-                if (e.EditingElement is System.Windows.Controls.TextBox textBox)
-                {
-                    string newValue = textBox.Text;
-                    string propertyName = ((Binding)column.ClipboardContentBinding)?.Path?.Path;
-                    
-                    if (!string.IsNullOrEmpty(propertyName))
-                    {
-                        if (DataContext is SheetSetViewModel viewModel)
-                        {
-                            viewModel.OnCellEdit(sheet, propertyName, newValue);
-                        }
-                    }
-                }
-            }
-        }
+        }        
     }
 }

@@ -6,19 +6,14 @@ using SheetSetManager.SheetManager.Interfaces;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace SheetSetManager.SheetManager.Managers
 {
     public partial class PropertyManager : ObservableObject, IList<IProperty>
     {
         private readonly List<IProperty> _properties = new();
-
-        [ObservableProperty] private bool _isSelected = false;
-        [ObservableProperty] private bool _isEdited = false;
 
         [ObservableProperty] private IProperty _sheetNumber;
         [ObservableProperty] private IProperty _date;
@@ -29,8 +24,7 @@ namespace SheetSetManager.SheetManager.Managers
         [ObservableProperty] private IProperty _drawnBy;
         [ObservableProperty] private IProperty _scale;
 
-        private IAcSmObjectId _sheetId;        
-
+        private IAcSmObjectId _sheetId;
         public PropertyManager(AcSmSheet comSheet)
         {
             _sheetId = comSheet.GetObjectId();
@@ -38,7 +32,7 @@ namespace SheetSetManager.SheetManager.Managers
             SheetNumber = new PropertySheetNumberModel(comSheet);
             _properties.Add(SheetNumber);
 
-            var propertyBag = comSheet.GetCustomPropertyBag();            
+            var propertyBag = comSheet.GetCustomPropertyBag();
 
             var sheetProperties = new AcSmPropertyEnumerator(
                 comSheet.GetCustomPropertyBag().GetPropertyEnumerator());
@@ -56,9 +50,27 @@ namespace SheetSetManager.SheetManager.Managers
                     case "Godkendt": ApprovedBy = property; _properties.Add(property); break;
                     case "Kontrol": CheckedBy = property; _properties.Add(property); break;
                     case "Målestok ex 1:50": Scale = property; _properties.Add(property); break;
-                }                             
+                }
             }
         }
+
+        public void SetValue(string key, string? value)
+        {
+            switch (key)
+            {
+                case nameof(SheetNumber): SheetNumber.Value = value; break;
+                case nameof(Date): Date.Value = value; break;
+                case nameof(Title1): Title1.Value = value; break;
+                case nameof(Title2): Title2.Value = value; break;
+                case nameof(ApprovedBy): ApprovedBy.Value = value; break;
+                case nameof(CheckedBy): CheckedBy.Value = value; break;
+                case nameof(DrawnBy): DrawnBy.Value = value; break;
+                case nameof(Scale): Scale.Value = value; break;
+                default:
+                    break;
+            }
+        }
+
         #region IList implementation
         public int Count => _properties.Count;
 

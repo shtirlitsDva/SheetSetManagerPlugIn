@@ -29,15 +29,12 @@
         </DockPanel>
     </hc:Window.NonClientAreaContent>
 
-    
-
     <Grid>
-        <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding SelectedSheet}"
+        <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding Sheets.SelectedSheet}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   IsReadOnly="False" KeyDown="DataGrid_KeyDown"
                   RowStyle="{StaticResource {x:Type DataGridRow}}"
-                  Sorting="DataGrid_Sorting"
-                  CellEditEnding="DataGrid_CellEditEnding" SelectionChanged="DataGrid_SelectionChanged"
+                  Sorting="DataGrid_Sorting"                
                   >
             <DataGrid.Columns>
 
@@ -63,19 +60,19 @@
                 </DataGridTemplateColumn>
 
                 <!-- Sheet General Information -->
-                <DataGridTextColumn Binding="{Binding SheetNumber}" Header="Sheet #" Width="150"/>
-                <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
-                <DataGridTextColumn Binding="{Binding Title1}" Header="Title 1" Width="150"/>
-                <DataGridTextColumn Binding="{Binding Title2}" Header="Title 2" Width="150"/>
-                <DataGridTextColumn Binding="{Binding ApprovedBy}" Header="Approved By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding CheckedBy}" Header="Checked By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding DrawnBy}" Header="Drawn By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Scale}" Header="Scale" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Properties.SheetNumber.Value}" Header="Sheet #" Width="150"/>
+                <DataGridTextColumn Binding="{Binding Properties.Date.Value}" Header="Date" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Properties.Title1.Value}" Header="Title 1" Width="150"/>
+                <DataGridTextColumn Binding="{Binding Properties.Title2.Value}" Header="Title 2" Width="150"/>
+                <DataGridTextColumn Binding="{Binding Properties.ApprovedBy.Value}" Header="Approved By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Properties.CheckedBy.Value}" Header="Checked By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Properties.DrawnBy.Value}" Header="Drawn By" Width="80"/>
+                <DataGridTextColumn Binding="{Binding Properties.Scale.Value}" Header="Scale" Width="80"/>
 
                 <!-- Latest Revision Information -->
-                <DataGridTextColumn Binding="{Binding LatestRevision.RevisionLetter}" Header="Rev #" Width="50"/>
-                <DataGridTextColumn Binding="{Binding LatestRevision.Date}" Header="Rev Date" Width="100"/>
-                <DataGridTextColumn Binding="{Binding LatestRevision.Description}" Header="Rev Description" Width="300"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.RevisionLetter.Value}" Header="Rev #" Width="50"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Date.Value}" Header="Rev Date" Width="100"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Description.Value}" Header="Rev Description" Width="300"/>
 
                 <!-- Actions for Revisions -->
                 <DataGridTemplateColumn Header="Actions" Width="80">
@@ -96,14 +93,20 @@
                     <Border BorderBrush="Gray" BorderThickness="1" Padding="5">
                         <StackPanel>
                             <TextBlock Text="All Revisions:" FontWeight="Bold"/>
-                            <DataGrid ItemsSource="{Binding Revisions}" AutoGenerateColumns="False" CanUserAddRows="False">
+                            <DataGrid ItemsSource="{Binding Revisions.ValidRevisions}" AutoGenerateColumns="False" CanUserAddRows="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding RevisionLetter}" Header="Rev #" Width="50"/>
-                                    <DataGridTextColumn Binding="{Binding Date}" Header="Date" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="300"/>
-                                    <DataGridTextColumn Binding="{Binding ApprovedBy}" Header="Approved By" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding CheckedBy}" Header="Checked By" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding DrawnBy}" Header="Drawn By" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding RevisionLetter.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Rev #" Width="50"/>
+                                    <DataGridTextColumn Binding="{Binding Date.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Date" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding Description.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Description" Width="300"/>
+                                    <DataGridTextColumn Binding="{Binding ApprovedBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Approved By" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding CheckedBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Checked By" Width="100"/>
+                                    <DataGridTextColumn Binding="{Binding DrawnBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="Drawn By" Width="100"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>

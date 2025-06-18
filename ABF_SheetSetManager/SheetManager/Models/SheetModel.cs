@@ -1,8 +1,8 @@
 ﻿using ACSMCOMPONENTS25Lib;
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SheetSetManager.SheetManager.Managers;
-using System.Security.RightsManagement;
+
+using System.Linq;
 
 namespace SheetSetManager.SheetManager.Models
 {
@@ -10,6 +10,8 @@ namespace SheetSetManager.SheetManager.Models
     {
         public PropertyManager Properties { get; }
         public RevisionManager Revisions { get; }
+
+        [ObservableProperty] private bool _isSelected = false;        
 
         public SheetModel(AcSmSheet comSheet)
         {
@@ -21,19 +23,16 @@ namespace SheetSetManager.SheetManager.Models
 
         public IAcSmObjectId Oid { get; }
         
-
-        public RevisionModel LatestRevision => Revisions.Count > 0 ? Revisions[^1] : null;
-
         public void MarkAsEdited(string propertyName, string newValue)
         {
-            IsEdited = true;
-            Changes.Add($"{propertyName}: {newValue}");
+            //IsEdited = true;
+            //Changes.Add($"{propertyName}: {newValue}");
         }
 
         public void AddRevision()
         {
-            char newRevLetter = Revisions.Count == 0 ? 'A' : (char)(Revisions[^1].RevisionLetter[0] + 1);
-            Revisions.Add(new RevisionModel { RevisionLetter = newRevLetter.ToString() });
+            //char newRevLetter = Revisions.Count == 0 ? 'A' : (char)(Revisions[^1].RevisionLetter[0] + 1);
+            //Revisions.Add(new RevisionModel { RevisionLetter = newRevLetter.ToString() });
         }
 
         public void RemoveRevision(RevisionModel rev)

@@ -1277,8 +1277,16 @@ namespace SheetSetManager
         {
             AcContext.Current = SynchronizationContext.Current;
 
-            var window = new SheetManagerWindow();
-            window.Show();
+            try
+            {
+                var window = new SheetManagerWindow();
+                window.ShowDialog();
+            }
+            catch (System.Exception ex)
+            {
+                prdDbg(ex);
+                return;
+            }
         }
 
         // Create a new sheet set with custom subsets

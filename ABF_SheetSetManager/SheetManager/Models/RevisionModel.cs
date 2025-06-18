@@ -4,11 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 using SheetSetManager.SheetManager.Interfaces;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace SheetSetManager.SheetManager.Models
 {
@@ -26,18 +23,27 @@ namespace SheetSetManager.SheetManager.Models
             //Assume the list contains properties for this revision
             foreach (var prop in list)
             {
-                var property = new PropertyCustomModel(prop);
-                if (prop.Name.Contains("Dato")) Date = property;
-                else if (prop.Name.Contains("Emne")) Description = property;
-                else if (prop.Name.Contains("Godkendt")) ApprovedBy = property;
-                else if (prop.Name.Contains("Kontrol")) CheckedBy = property;
-                else if (prop.Name.Contains("Tegner")) DrawnBy = property;
-                else _revisionLetter = property; //Assume this is the revision letter
-            }            
+                var p = new PropertyCustomModel(prop);
+                p.PropertyChanged += OnInnerValueChanged;
+                if (prop.Name.Contains("Dato")) Date = p;
+                else if (prop.Name.Contains("Emne")) Description = p;
+                else if (prop.Name.Contains("Godkendt")) ApprovedBy = p;
+                else if (prop.Name.Contains("Kontrol")) CheckedBy = p;
+                else if (prop.Name.Contains("Tegner")) DrawnBy = p;
+                else _revisionLetter = p; //Assume this is the revision letter
+            }
+        }
+
+        private void OnInnerValueChanged(object? _, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IProperty.Value))
+            {
+                OnPropertyChanged(nameof(IsValid));
+            }
         }
 
         //Revision letter must not be checked for validity as it is always present
-        public bool IsValid => //!string.IsNullOrEmpty(RevisionLetter) ||
+        public bool IsValid => !string.IsNullOrEmpty(RevisionLetter.Value) ||
                                !string.IsNullOrEmpty(Date.Value) ||
                                !string.IsNullOrEmpty(Description.Value) ||
                                !string.IsNullOrEmpty(ApprovedBy.Value) ||

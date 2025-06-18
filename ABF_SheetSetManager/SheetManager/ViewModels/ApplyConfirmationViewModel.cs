@@ -25,28 +25,14 @@ namespace SheetSetManager.SheetManager.ViewModels
 
             if (modifiedSheets.Count == 1)
             {
-                SummaryText = $"You are about to modify 1 sheet:\n{modifiedSheets[0].SheetNumber}";
+                SummaryText = $"You are about to modify 1 sheet:\n{modifiedSheets[0].Properties.SheetNumber}";
             }
             else
             {
                 SummaryText = $"You are about to modify {modifiedSheets.Count} sheets.";
             }
 
-            // Collect changes for each sheet
-            foreach (var sheet in modifiedSheets)
-            {
-                sheet.Changes = new List<string>();
-
-                if (sheet.IsEdited)
-                {
-                    if (!string.IsNullOrEmpty(sheet.Title1)) sheet.Changes.Add($"Title1: {sheet.Title1}");
-                    if (!string.IsNullOrEmpty(sheet.Title2)) sheet.Changes.Add($"Title2: {sheet.Title2}");
-                    if (!string.IsNullOrEmpty(sheet.ApprovedBy)) sheet.Changes.Add($"ApprovedBy: {sheet.ApprovedBy}");
-                    if (!string.IsNullOrEmpty(sheet.CheckedBy)) sheet.Changes.Add($"CheckedBy: {sheet.CheckedBy}");
-                    if (!string.IsNullOrEmpty(sheet.DrawnBy)) sheet.Changes.Add($"DrawnBy: {sheet.DrawnBy}");
-                    if (!string.IsNullOrEmpty(sheet.Scale)) sheet.Changes.Add($"Scale: {sheet.Scale}");
-                }
-            }
+            
         }
     }
 }
