@@ -66,9 +66,20 @@ namespace SheetSetManager.SheetManager.ViewModels
             //SelectedSheet?.RemoveRevision(revision);
         }
 
-        public void OnCellEdit(SheetModel editedSheet, string bindingPath, string newValue)
+        public void BroadcastEdit(object editedItem, string key, string? value)
         {
-
+            if (editedItem is SheetModel sheetRow)
+            {
+                foreach (var s in Sheets.Where(s => s.IsSelected || s == sheetRow))
+                    s.Properties[key].Value = value;
+            }
+            else if (editedItem is RevisionModel revRow)
+            {
+                var letter = revRow.RevisionLetter.Value;
+                foreach (var s in Sheets.Where(s => s.IsSelected))
+                    s.Revisions.FirstOrDefault(r => r.RevisionLetter.Value == letter)?
+                               [key].Value = value;
+            }
         }
     }
 }

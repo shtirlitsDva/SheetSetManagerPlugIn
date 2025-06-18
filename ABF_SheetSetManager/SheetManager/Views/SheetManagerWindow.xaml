@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
-        xmlns:local="clr-namespace:SheetSetManager.SheetManager.Views"
+        xmlns:local="clr-namespace:SheetSetManager.SheetManager.Views"      
         mc:Ignorable="d"
         Title="Sheet Manager" Height="600" Width="900"
         >
@@ -60,7 +60,10 @@
                 </DataGridTemplateColumn>
 
                 <!-- Sheet General Information -->
-                <DataGridTextColumn Binding="{Binding Properties.SheetNumber.Value}" Header="Sheet #" Width="150"/>
+                <local:CustomTextColumn Binding="{Binding Properties.SheetNumber.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    Header="Sheet #" Width="150"
+                    TagPath=""/>
                 <DataGridTextColumn Binding="{Binding Properties.Date.Value}" Header="Date" Width="100"/>
                 <DataGridTextColumn Binding="{Binding Properties.Title1.Value}" Header="Title 1" Width="150"/>
                 <DataGridTextColumn Binding="{Binding Properties.Title2.Value}" Header="Title 2" Width="150"/>

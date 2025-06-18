@@ -14,6 +14,7 @@ namespace SheetSetManager.SheetManager.Managers
     public partial class PropertyManager : ObservableObject, IList<IProperty>
     {
         private readonly List<IProperty> _properties = new();
+        private readonly Dictionary<string, IProperty> _propDict = new();
 
         [ObservableProperty] private IProperty _sheetNumber;
         [ObservableProperty] private IProperty _date;
@@ -30,7 +31,7 @@ namespace SheetSetManager.SheetManager.Managers
             _sheetId = comSheet.GetObjectId();
 
             SheetNumber = new PropertySheetNumberModel(comSheet);
-            _properties.Add(SheetNumber);
+            Add(SheetNumber);
 
             var propertyBag = comSheet.GetCustomPropertyBag();
 
@@ -43,31 +44,14 @@ namespace SheetSetManager.SheetManager.Managers
 
                 switch (prop.Name)
                 {
-                    case "1 Tegner": DrawnBy = property; _properties.Add(property); break;
-                    case "Dato": Date = property; _properties.Add(property); break;
-                    case "Emnelinje 1": Title1 = property; _properties.Add(property); break;
-                    case "Emnelinje 2": Title2 = property; _properties.Add(property); break;
-                    case "Godkendt": ApprovedBy = property; _properties.Add(property); break;
-                    case "Kontrol": CheckedBy = property; _properties.Add(property); break;
-                    case "Målestok ex 1:50": Scale = property; _properties.Add(property); break;
+                    case "1 Tegner": DrawnBy = property; Add(property); break;
+                    case "Dato": Date = property; Add(property); break;
+                    case "Emnelinje 1": Title1 = property; Add(property); break;
+                    case "Emnelinje 2": Title2 = property; Add(property); break;
+                    case "Godkendt": ApprovedBy = property; Add(property); break;
+                    case "Kontrol": CheckedBy = property; Add(property); break;
+                    case "Målestok ex 1:50": Scale = property; Add(property); break;
                 }
-            }
-        }
-
-        public void SetValue(string key, string? value)
-        {
-            switch (key)
-            {
-                case nameof(SheetNumber): SheetNumber.Value = value; break;
-                case nameof(Date): Date.Value = value; break;
-                case nameof(Title1): Title1.Value = value; break;
-                case nameof(Title2): Title2.Value = value; break;
-                case nameof(ApprovedBy): ApprovedBy.Value = value; break;
-                case nameof(CheckedBy): CheckedBy.Value = value; break;
-                case nameof(DrawnBy): DrawnBy.Value = value; break;
-                case nameof(Scale): Scale.Value = value; break;
-                default:
-                    break;
             }
         }
 
@@ -75,6 +59,12 @@ namespace SheetSetManager.SheetManager.Managers
         public int Count => _properties.Count;
 
         public bool IsReadOnly => false;
+
+        public IProperty this[string name]
+        {
+            get => _propDict[name];
+            set => _propDict[name] = value;
+        }
 
         public IProperty this[int index]
         {
@@ -100,6 +90,7 @@ namespace SheetSetManager.SheetManager.Managers
         public void Add(IProperty item)
         {
             _properties.Add(item);
+            _propDict.Add(item.Name, item);
         }
 
         public void Clear()

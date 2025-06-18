@@ -1,19 +1,11 @@
-﻿using HandyControl.Controls;
-using HandyControl.Themes;
+﻿using HandyControl.Themes;
 
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.SheetManager.ViewModels;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 
 //using TextBox = HandyControl.Controls.TextBox;
 using Window = HandyControl.Controls.Window;
@@ -60,7 +52,7 @@ namespace SheetSetManager.SheetManager.Views
 
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            
+
         }
 
         private void SelectAllCheckBox_Click(object sender, RoutedEventArgs e)
@@ -72,6 +64,17 @@ namespace SheetSetManager.SheetManager.Views
                     sheet.IsSelected = !sheet.IsSelected;
                 }
             }
-        }        
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Column is CustomTextColumn col &&          // ← your class
+            !string.IsNullOrEmpty(col.TagPath) &&
+            e.EditingElement is TextBox tb &&
+            DataContext is SheetSetViewModel vm)
+            {
+                vm.BroadcastEdit(e.Row.Item, col.TagPath, tb.Text);
+            }
+        }
     }
 }
