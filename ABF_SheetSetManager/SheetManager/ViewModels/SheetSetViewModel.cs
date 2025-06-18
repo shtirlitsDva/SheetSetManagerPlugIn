@@ -65,5 +65,10 @@ namespace SheetSetManager.SheetManager.ViewModels
         {
             //SelectedSheet?.RemoveRevision(revision);
         }
+
+        public void OnCellEdit(SheetModel editedSheet, string bindingPath, string newValue)
+        {
+
+        }
     }
 }
