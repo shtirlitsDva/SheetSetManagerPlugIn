@@ -57,13 +57,15 @@ namespace SheetSetManager.SheetManager.ViewModels
         [RelayCommand]
         private void AddRevisionToSelected()
         {
-            //SelectedSheet?.AddRevision();
+            foreach (var sheet in Sheets.Where(s => s.IsSelected))
+                sheet.Revisions.AddNextRevision();
         }
 
         [RelayCommand]
-        private void RemoveRevisionFromSelected(RevisionModel revision)
+        private void RemoveRevisionFromSelected()
         {
-            //SelectedSheet?.RemoveRevision(revision);
+            foreach (var sheet in Sheets.Where(s => s.IsSelected))
+                sheet.Revisions.RemoveLatestRevision();
         }
 
         public void BroadcastEdit(object editedItem, string key, string? value)

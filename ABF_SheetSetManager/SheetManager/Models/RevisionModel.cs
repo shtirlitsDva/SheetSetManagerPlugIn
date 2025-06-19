@@ -62,6 +62,11 @@ namespace SheetSetManager.SheetManager.Models
             }
         }
 
+        internal void Blank()
+        {
+            foreach (var prop in _propDict) prop.Value.Value = "";
+        }
+
         //Revision letter must not be checked for validity as it is always present
         public bool IsValid => !string.IsNullOrEmpty(RevisionLetter.Value) ||
                                !string.IsNullOrEmpty(Date.Value) ||

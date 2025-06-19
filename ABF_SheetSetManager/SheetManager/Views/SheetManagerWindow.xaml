@@ -17,13 +17,19 @@
     <hc:Window.NonClientAreaContent>
         <DockPanel Background="{x:Null}" Height="Auto">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="R+" Command="{Binding AddRevisionToSelected}"
+                        Margin="5" Padding="5,2"
+                        Background="#465264" Foreground="White"/>
+                <Button Content="R-" Command="{Binding RemoveRevisionFromSelected}"
+                        Margin="5" Padding="5,2"
+                        Background="#465264" Foreground="White"/>
                 <Button Content="Reset" Command="{Binding ResetSheetsCommand}" 
-                           Margin="5" Padding="5,2"
-                           Background="#465264" Foreground="White"/>
+                        Margin="5" Padding="5,2"
+                        Background="#465264" Foreground="White"/>
                 <Button Content="Apply" Command="{Binding ApplyChangesCommand}" 
-                           Margin="5" Padding="5,2"
-                           Background="#556677" Foreground="White"
-                           Visibility="{Binding HasPendingChanges, 
+                        Margin="5" Padding="5,2"
+                        Background="#465264" Foreground="White"
+                        Visibility="{Binding HasPendingChanges, 
                     Converter={StaticResource btvc}}"/>
             </StackPanel>
         </DockPanel>
@@ -32,7 +38,7 @@
     <Grid>
         <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding Sheets.SelectedSheet}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                  IsReadOnly="False" KeyDown="DataGrid_KeyDown"
+                  IsReadOnly="False" PreviewKeyDown="DataGrid_PreviewKeyDown"
                   CellEditEnding="DataGrid_CellEditEnding"
                   RowStyle="{StaticResource {x:Type DataGridRow}}"
                   Sorting="DataGrid_Sorting"            
@@ -52,7 +58,8 @@
                     <!-- Row Checkbox: Prevents row expansion -->
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, 
+                                UpdateSourceTrigger=PropertyChanged}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       PreviewMouseDown="CheckBox_PreviewMouseDown"/>
@@ -101,18 +108,6 @@
                                     Header="Rev Date" Width="100" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Description.Value}"
                                     Header="Rev Description" Width="300" IsReadOnly="True"/>
-
-                <!-- Actions for Revisions -->
-                <DataGridTemplateColumn Header="Actions" Width="80">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="+" Command="{Binding DataContext.AddRevisionToSelected, RelativeSource={RelativeSource AncestorType=Window}}" />
-                                <Button Content="-" Command="{Binding DataContext.RemoveRevisionFromSelected, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding LatestRevision}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
 
             <!-- Row Details: Expand to show all revisions -->

@@ -61,7 +61,20 @@ namespace SheetSetManager.SheetManager.Managers
             }
 
             LatestRevision = _valid.LastOrDefault();            
-        }        
+        }
+
+        internal void AddNextRevision()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveLatestRevision()
+        {
+            if (LatestRevision == null) return;
+            LatestRevision.Blank();
+            _valid.Remove(LatestRevision);
+            LatestRevision = _valid.LastOrDefault();            
+        }
 
         #region ▬▬▬ events ▬▬▬
         public event NotifyCollectionChangedEventHandler? CollectionChanged;
@@ -153,7 +166,7 @@ namespace SheetSetManager.SheetManager.Managers
         bool ICollection.IsSynchronized => false;
         object ICollection.SyncRoot => this;
         void ICollection.CopyTo(Array array, int index) =>
-            ((ICollection)_valid).CopyTo(array, index);
+            ((ICollection)_valid).CopyTo(array, index);        
         #endregion
     }
 }

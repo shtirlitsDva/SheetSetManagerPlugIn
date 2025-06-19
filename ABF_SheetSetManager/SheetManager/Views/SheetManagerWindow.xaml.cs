@@ -39,13 +39,14 @@ namespace SheetSetManager.SheetManager.Views
             }
         }
 
-        private void DataGrid_KeyDown(object sender, KeyEventArgs e)
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space) // Check if Spacebar is pressed
             {
                 if (sender is DataGrid dataGrid && dataGrid.SelectedItem is SheetModel selectedSheet)
                 {
                     selectedSheet.IsSelected = !selectedSheet.IsSelected; // Toggle checkbox state
+                    e.Handled = true;
                 }
             }
         }
