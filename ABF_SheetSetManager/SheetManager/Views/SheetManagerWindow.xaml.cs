@@ -68,7 +68,7 @@ namespace SheetSetManager.SheetManager.Views
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (e.Column is CustomTextColumn col &&          // ← your class
+            if (e.Column is CustomTextColumn col &&
             !string.IsNullOrEmpty(col.TagPath) &&
             e.EditingElement is TextBox tb &&
             DataContext is SheetSetViewModel vm)

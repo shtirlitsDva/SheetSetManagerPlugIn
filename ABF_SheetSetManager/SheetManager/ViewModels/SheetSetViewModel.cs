@@ -19,12 +19,12 @@ namespace SheetSetManager.SheetManager.ViewModels
     {
         private readonly Interop.SheetSetManager _sheetSetManager = new();
 
-        public SheetsManager Sheets => _sheetSetManager.Sheets;        
+        public SheetsManager Sheets => _sheetSetManager.Sheets;
 
         public SheetSetViewModel()
         {
             _sheetSetManager.LoadSheets();
-        }        
+        }
 
         [RelayCommand]
         private void ApplyChanges()
@@ -52,7 +52,7 @@ namespace SheetSetManager.SheetManager.ViewModels
         {
             //_sheetSetManager.LoadSheets(); // ✅ Reload sheets from database
             //HasPendingChanges = false;
-        }        
+        }
 
         [RelayCommand]
         private void AddRevisionToSelected()
@@ -75,10 +75,12 @@ namespace SheetSetManager.SheetManager.ViewModels
             }
             else if (editedItem is RevisionModel revRow)
             {
-                var letter = revRow.RevisionLetter.Value;
                 foreach (var s in Sheets.Where(s => s.IsSelected))
-                    s.Revisions.FirstOrDefault(r => r.RevisionLetter.Value == letter)?
-                               [key].Value = value;
+                {
+                    var query = s.Revisions.FirstOrDefault(
+                        r => r.RevId == revRow.RevId);
+                    if (query != null) query[key].Value = value;
+                }
             }
         }
     }

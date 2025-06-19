@@ -33,8 +33,9 @@
         <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding Sheets.SelectedSheet}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   IsReadOnly="False" KeyDown="DataGrid_KeyDown"
+                  CellEditEnding="DataGrid_CellEditEnding"
                   RowStyle="{StaticResource {x:Type DataGridRow}}"
-                  Sorting="DataGrid_Sorting"                
+                  Sorting="DataGrid_Sorting"            
                   >
             <DataGrid.Columns>
 
@@ -63,19 +64,43 @@
                 <local:CustomTextColumn Binding="{Binding Properties.SheetNumber.Value,
                     Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                     Header="Sheet #" Width="150"
-                    TagPath=""/>
-                <DataGridTextColumn Binding="{Binding Properties.Date.Value}" Header="Date" Width="100"/>
-                <DataGridTextColumn Binding="{Binding Properties.Title1.Value}" Header="Title 1" Width="150"/>
-                <DataGridTextColumn Binding="{Binding Properties.Title2.Value}" Header="Title 2" Width="150"/>
-                <DataGridTextColumn Binding="{Binding Properties.ApprovedBy.Value}" Header="Approved By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Properties.CheckedBy.Value}" Header="Checked By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Properties.DrawnBy.Value}" Header="Drawn By" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Properties.Scale.Value}" Header="Scale" Width="80"/>
+                    TagPath="Number"/>
+                <local:CustomTextColumn Binding="{Binding Properties.Date.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Date" Width="100"
+                    TagPath="Dato"/>
+                <local:CustomTextColumn Binding="{Binding Properties.Title1.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Title 1" Width="150"
+                    TagPath="Emnelinje 1"/>
+                <local:CustomTextColumn Binding="{Binding Properties.Title2.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Title 2" Width="150"
+                    TagPath="Emnelinje 2"/>
+                <local:CustomTextColumn Binding="{Binding Properties.ApprovedBy.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Approved By" Width="80"
+                    TagPath="Godkendt"/>
+                <local:CustomTextColumn Binding="{Binding Properties.CheckedBy.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Checked By" Width="80"
+                    TagPath="Kontrol"/>
+                <local:CustomTextColumn Binding="{Binding Properties.DrawnBy.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Drawn By" Width="80"
+                    TagPath="1 Tegner"/>
+                <local:CustomTextColumn Binding="{Binding Properties.Scale.Value,
+                    Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Header="Scale" Width="80"
+                    TagPath="Målestok ex 1:50"/>
 
                 <!-- Latest Revision Information -->
-                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.RevisionLetter.Value}" Header="Rev #" Width="50"/>
-                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Date.Value}" Header="Rev Date" Width="100"/>
-                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Description.Value}" Header="Rev Description" Width="300"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.RevisionLetter.Value}"
+                                    Header="Rev #" Width="50" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Date.Value}"
+                                    Header="Rev Date" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding Revisions.LatestRevision.Description.Value}"
+                                    Header="Rev Description" Width="300" IsReadOnly="True"/>
 
                 <!-- Actions for Revisions -->
                 <DataGridTemplateColumn Header="Actions" Width="80">
@@ -96,20 +121,35 @@
                     <Border BorderBrush="Gray" BorderThickness="1" Padding="5">
                         <StackPanel>
                             <TextBlock Text="All Revisions:" FontWeight="Bold"/>
-                            <DataGrid ItemsSource="{Binding Revisions.ValidRevisions}" AutoGenerateColumns="False" CanUserAddRows="False">
+                            <DataGrid ItemsSource="{Binding Revisions}"
+                                      AutoGenerateColumns="False" 
+                                      CanUserAddRows="False"
+                                      CellEditEnding="DataGrid_CellEditEnding">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding RevisionLetter.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Rev #" Width="50"/>
-                                    <DataGridTextColumn Binding="{Binding Date.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Date" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding Description.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Description" Width="300"/>
-                                    <DataGridTextColumn Binding="{Binding ApprovedBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Approved By" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding CheckedBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Checked By" Width="100"/>
-                                    <DataGridTextColumn Binding="{Binding DrawnBy.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="Drawn By" Width="100"/>
+                                    <local:CustomTextColumn Binding="{Binding RevisionLetter.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Rev #" Width="50"
+                                        TagPath="Rev"/>
+                                    <local:CustomTextColumn Binding="{Binding Date.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Date" Width="100"
+                                        TagPath="Dato"/>
+                                    <local:CustomTextColumn Binding="{Binding Description.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Description" Width="300"
+                                        TagPath="Emne"/>
+                                    <local:CustomTextColumn Binding="{Binding ApprovedBy.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Approved By" Width="100"
+                                        TagPath="Godkendt"/>
+                                    <local:CustomTextColumn Binding="{Binding CheckedBy.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Checked By" Width="100"
+                                        TagPath="Kontrol"/>
+                                    <local:CustomTextColumn Binding="{Binding DrawnBy.Value,
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Header="Drawn By" Width="100"
+                                        TagPath="Tegner"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>

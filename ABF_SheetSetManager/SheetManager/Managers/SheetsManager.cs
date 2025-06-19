@@ -33,8 +33,7 @@ namespace SheetSetManager.SheetManager.Managers
             ((INotifyPropertyChanged)_sheets).PropertyChanged += (_, e) =>
             {
                 // propagate only those the UI actually cares about
-                if (e.PropertyName is "Count" or "Item[]")
-                    OnPropertyChanged(e.PropertyName);
+                if (e.PropertyName is "Count" or "Item[]") OnPropertyChanged(e.PropertyName);
             };
         }
         #endregion

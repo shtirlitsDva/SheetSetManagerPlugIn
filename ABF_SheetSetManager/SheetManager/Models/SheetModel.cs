@@ -21,23 +21,6 @@ namespace SheetSetManager.SheetManager.Models
             Revisions = new RevisionManager(comSheet);
         }
 
-        public IAcSmObjectId Oid { get; }
-        
-        public void MarkAsEdited(string propertyName, string newValue)
-        {
-            //IsEdited = true;
-            //Changes.Add($"{propertyName}: {newValue}");
-        }
-
-        public void AddRevision()
-        {
-            //char newRevLetter = Revisions.Count == 0 ? 'A' : (char)(Revisions[^1].RevisionLetter[0] + 1);
-            //Revisions.Add(new RevisionModel { RevisionLetter = newRevLetter.ToString() });
-        }
-
-        public void RemoveRevision(RevisionModel rev)
-        {
-            Revisions.Remove(rev);
-        }
+        public IAcSmObjectId Oid { get; }        
     }
 }
