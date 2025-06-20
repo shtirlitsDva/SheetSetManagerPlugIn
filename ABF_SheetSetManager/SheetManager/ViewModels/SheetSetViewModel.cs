@@ -11,6 +11,7 @@ using SheetSetManager.Wrappers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 
 
 namespace SheetSetManager.SheetManager.ViewModels
@@ -50,15 +51,23 @@ namespace SheetSetManager.SheetManager.ViewModels
         [RelayCommand]
         private void ResetSheets()
         {
-            //_sheetSetManager.LoadSheets(); // ✅ Reload sheets from database
-            //HasPendingChanges = false;
+            _sheetSetManager.LoadSheets();
         }
 
         [RelayCommand]
         private void AddRevisionToSelected()
         {
-            foreach (var sheet in Sheets.Where(s => s.IsSelected))
-                sheet.Revisions.AddNextRevision();
+            if (!Sheets.Where(s => s.IsSelected).Any()) return;
+
+            var dlg = new RevisionDialog();            
+
+            if (dlg.ShowDialog() != true) return;
+
+            var template = dlg.Result;
+
+            foreach (var sheet in Sheets.Where(
+                s => s.IsSelected))
+                sheet.Revisions.AddNextRevision(template);
         }
 
         [RelayCommand]

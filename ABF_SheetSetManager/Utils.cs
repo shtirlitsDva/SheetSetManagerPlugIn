@@ -81,5 +81,54 @@ namespace SheetSetManager
         {
             AcContext.Current.Post(_ => { prdDbg(obj); }, null);
         }
+        // ────────────────────────────────────────────────────────────────
+        //  Alphabetic sequence: A, B, … Z, AA, AB, … ZZ, AAA …
+        // ────────────────────────────────────────────────────────────────
+        public static string NextAlpha(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return "A";
+
+            var chars = value.ToUpperInvariant().ToCharArray();
+
+            // increment like a base-26 counter where A=0 … Z=25
+            for (int i = chars.Length - 1; i >= 0; i--)
+            {
+                if (chars[i] < 'A' || chars[i] > 'Z')
+                    throw new ArgumentException("Input contains non-letter characters.", nameof(value));
+
+                if (chars[i] == 'Z')
+                {
+                    chars[i] = 'A';
+                    if (i == 0)                         // overflow at leftmost char
+                        return "A" + new string(chars); // prepend a new digit
+                    continue;                           // carry to next position
+                }
+
+                chars[i]++;                             // simple increment, done
+                return new string(chars);
+            }
+
+            return new string(chars); // never reached
+        }
+
+        // ────────────────────────────────────────────────────────────────
+        //  Numeric sequence: 1, 2, … 9, 10, 11 … 99, 100 …
+        //  Preserves leading-zero padding width (e.g. 004 → 005)
+        // ────────────────────────────────────────────────────────────────
+        public static string NextNumeric(string? value)
+        {
+            // first element when string is null/empty
+            if (string.IsNullOrWhiteSpace(value))
+                return "01";
+
+            if (!value.All(char.IsDigit))
+                throw new ArgumentException("Input contains non-digit characters.", nameof(value));
+
+            int width = Math.Max(value.Length, 2);     // always at least 2 digits
+            long number = long.Parse(value) + 1;
+
+            return number.ToString($"D{width}");         // zero-padded
+        }
     }
 }

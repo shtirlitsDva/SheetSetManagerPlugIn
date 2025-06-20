@@ -2,8 +2,10 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using SheetSetManager.SheetManager.Enums;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
+using static SheetSetManager.Utils;
 
 using System;
 using System.Collections;
@@ -12,7 +14,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
 
 namespace SheetSetManager.SheetManager.Managers
 {
@@ -20,7 +21,7 @@ namespace SheetSetManager.SheetManager.Managers
         ObservableObject,
         IList<RevisionModel>,
         IList,
-        INotifyCollectionChanged, 
+        INotifyCollectionChanged,
         INotifyPropertyChanged
     {
         private readonly ObservableCollection<RevisionModel> _all = new();
@@ -63,9 +64,38 @@ namespace SheetSetManager.SheetManager.Managers
             LatestRevision = _valid.LastOrDefault();            
         }
 
-        internal void AddNextRevision()
+        internal void AddNextRevision(RevisionTemplateModel template)
         {
-            throw new NotImplementedException();
+            var revisionToFillOut = _all.First(
+                x => !_valid.Contains(x));
+
+            string? revLetter = LatestRevision?.RevisionLetter.Value;
+            revLetter = DetermineNextRevisionLetter(
+                revLetter, template.Sequence);
+
+            revisionToFillOut.RevisionLetter.Value = revLetter;
+            revisionToFillOut.Date.Value = template.Date;
+            revisionToFillOut.Description.Value = template.Description;
+            revisionToFillOut.ApprovedBy.Value = template.ApprovedBy;
+            revisionToFillOut.CheckedBy.Value = template.CheckedBy;
+            revisionToFillOut.DrawnBy.Value = template.DrawnBy;
+
+            _valid.Add(revisionToFillOut);
+            LatestRevision = revisionToFillOut;
+        }
+
+        private static string DetermineNextRevisionLetter(
+            string? previousLetter, RevisionSequence selectedSequence)
+        {
+            switch (selectedSequence)
+            {
+                case RevisionSequence.Numeric:
+                    return NextNumeric(previousLetter);
+                case RevisionSequence.Alphabetic:
+                    return NextAlpha(previousLetter);
+                default:
+                    throw new Exception("Unsupported RevisionSequence!");
+            }
         }
 
         internal void RemoveLatestRevision()
@@ -73,7 +103,7 @@ namespace SheetSetManager.SheetManager.Managers
             if (LatestRevision == null) return;
             LatestRevision.Blank();
             _valid.Remove(LatestRevision);
-            LatestRevision = _valid.LastOrDefault();            
+            LatestRevision = _valid.LastOrDefault();
         }
 
         #region ▬▬▬ events ▬▬▬
@@ -108,7 +138,7 @@ namespace SheetSetManager.SheetManager.Managers
 
         public void Add(RevisionModel item)
         {
-            _valid.Add(item);            
+            _valid.Add(item);
         }
 
         public void Clear()
@@ -166,7 +196,7 @@ namespace SheetSetManager.SheetManager.Managers
         bool ICollection.IsSynchronized => false;
         object ICollection.SyncRoot => this;
         void ICollection.CopyTo(Array array, int index) =>
-            ((ICollection)_valid).CopyTo(array, index);        
+            ((ICollection)_valid).CopyTo(array, index);
         #endregion
     }
 }

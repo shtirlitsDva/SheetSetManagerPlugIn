@@ -17,10 +17,10 @@
     <hc:Window.NonClientAreaContent>
         <DockPanel Background="{x:Null}" Height="Auto">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="R+" Command="{Binding AddRevisionToSelected}"
+                <Button Content="R+" Command="{Binding AddRevisionToSelectedCommand}"
                         Margin="5" Padding="5,2"
                         Background="#465264" Foreground="White"/>
-                <Button Content="R-" Command="{Binding RemoveRevisionFromSelected}"
+                <Button Content="R-" Command="{Binding RemoveRevisionFromSelectedCommand}"
                         Margin="5" Padding="5,2"
                         Background="#465264" Foreground="White"/>
                 <Button Content="Reset" Command="{Binding ResetSheetsCommand}" 
