@@ -26,6 +26,7 @@ namespace SheetSetManager.SheetManager.Managers
     {
         private readonly ObservableCollection<RevisionModel> _all = new();
         private readonly ObservableCollection<RevisionModel> _valid = new();
+        public ObservableCollection<RevisionModel> AllRevisions => _all;
 
         [ObservableProperty] private RevisionModel? _latestRevision;
 
@@ -80,6 +81,8 @@ namespace SheetSetManager.SheetManager.Managers
             revisionToFillOut.CheckedBy.Value = template.CheckedBy;
             revisionToFillOut.DrawnBy.Value = template.DrawnBy;
 
+            revisionToFillOut.ChangePending = true;
+
             _valid.Add(revisionToFillOut);
             LatestRevision = revisionToFillOut;
         }
@@ -87,21 +90,19 @@ namespace SheetSetManager.SheetManager.Managers
         private static string DetermineNextRevisionLetter(
             string? previousLetter, RevisionSequence selectedSequence)
         {
-            switch (selectedSequence)
+            return selectedSequence switch
             {
-                case RevisionSequence.Numeric:
-                    return NextNumeric(previousLetter);
-                case RevisionSequence.Alphabetic:
-                    return NextAlpha(previousLetter);
-                default:
-                    throw new Exception("Unsupported RevisionSequence!");
-            }
+                RevisionSequence.Numeric => NextNumeric(previousLetter),
+                RevisionSequence.Alphabetic => NextAlpha(previousLetter),
+                _ => throw new Exception("Unsupported RevisionSequence!"),
+            };
         }
 
         internal void RemoveLatestRevision()
         {
             if (LatestRevision == null) return;
             LatestRevision.Blank();
+            LatestRevision.ChangePending = true;
             _valid.Remove(LatestRevision);
             LatestRevision = _valid.LastOrDefault();
         }

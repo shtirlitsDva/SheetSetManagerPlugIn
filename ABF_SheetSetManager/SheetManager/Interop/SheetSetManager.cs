@@ -5,6 +5,7 @@ using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
 
 using System;
+using System.Linq;
 
 using static SheetSetManager.Utils;
 
@@ -73,7 +74,7 @@ namespace SheetSetManager.SheetManager.Interop
             {
                 prtDbg("Database is not initialized. Cannot load sheets.");
                 return;
-            }            
+            }
 
             Sheets.Clear(); // Clear existing sheets
 
@@ -96,6 +97,20 @@ namespace SheetSetManager.SheetManager.Interop
                     _sheets.Add(sheetModel);
                 }
             }
+        }
+
+        internal void LockDatabase()
+        {
+            if (_db == null)
+                throw new Exception("DATABASE is NULL");
+            _db.LockDb(_db);
+        }
+        internal void UnlockDatabase(bool commit)
+        {
+            if (_db == null)
+                throw new Exception("DATABASE is NULL");
+            
+            _db.UnlockDb(_db, commit);            
         }
     }
 }

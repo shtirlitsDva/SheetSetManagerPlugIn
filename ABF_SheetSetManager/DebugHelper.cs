@@ -12,6 +12,7 @@ namespace SheetSetManager
 {
     internal class DebugHelper
     {
+#if DEBUG
         public static Assembly Debug_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             string assemblyFolder = @"X:\GitHub\shtirlitsDva\SheetSetManagerPlugIn\ABF_SheetSetManager\bin\Debug";
@@ -24,4 +25,5 @@ namespace SheetSetManager
             else { prdDbg($"File not found: {filePath}!"); return null; }
         }
     }
+#endif
 }

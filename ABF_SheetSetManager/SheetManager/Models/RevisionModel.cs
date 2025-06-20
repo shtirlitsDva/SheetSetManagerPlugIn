@@ -2,28 +2,29 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using SheetSetManager.SheetManager.Enums;
 using SheetSetManager.SheetManager.Interfaces;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-using Windows.Media.Protection;
-
 namespace SheetSetManager.SheetManager.Models
 {
     public partial class RevisionModel : ObservableObject
     {
         public RevisionId RevId { get; }
+        [ObservableProperty] private bool _changePending = false;
 
         [ObservableProperty] private IProperty _revisionLetter;
         [ObservableProperty] private IProperty _date;
         [ObservableProperty] private IProperty _description;
         [ObservableProperty] private IProperty _approvedBy;
         [ObservableProperty] private IProperty _checkedBy;
-        [ObservableProperty] private IProperty _drawnBy;
+        [ObservableProperty] private IProperty _drawnBy;        
 
         private Dictionary<string, IProperty> _propDict = new();
+        public IEnumerable<IProperty> Properties => _propDict.Values;
         public IProperty this[string name]
         {
             get => _propDict[name];
@@ -73,19 +74,6 @@ namespace SheetSetManager.SheetManager.Models
                                !string.IsNullOrEmpty(Description.Value) ||
                                !string.IsNullOrEmpty(ApprovedBy.Value) ||
                                !string.IsNullOrEmpty(CheckedBy.Value) ||
-                               !string.IsNullOrEmpty(DrawnBy.Value);
-
-        public enum RevisionId 
-        {
-            Unknown = 0,
-            RevA, 
-            RevB,
-            RevC,
-            RevD,
-            RevE,
-            RevF,
-            RevG,
-            RevH
-        }
+                               !string.IsNullOrEmpty(DrawnBy.Value);        
     }
 }

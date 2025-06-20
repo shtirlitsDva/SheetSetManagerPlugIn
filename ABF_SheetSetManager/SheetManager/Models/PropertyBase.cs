@@ -17,17 +17,21 @@ namespace SheetSetManager.SheetManager.Models
         public string? Value
         {
             get => _value;
-            set { if (SetProperty(ref _value, value)) ChangePending = true; }
+            set { 
+                if (SetProperty(ref _value, value)) ChangePending = true;
+                OnPropertyChanged(nameof(ChangePending));
+            }
         }        
 
         public bool ChangePending { get; private set; } = false;
         public void ApplyChange()
         {
             if (!ChangePending) return;
-            ImplementButDoNotCall_ApplyChange();
+            ActualApplyChange();
             ChangePending = false;
+            OnPropertyChanged(nameof(ChangePending));
         }
-        protected abstract void ImplementButDoNotCall_ApplyChange();
+        protected abstract void ActualApplyChange();
         
         public PropertyBase(string name)
         {

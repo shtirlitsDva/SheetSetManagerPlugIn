@@ -24,7 +24,7 @@ namespace SheetSetManager.SheetManager.Models
             Oid = property.Value.GetObjectId();
         }
 
-        protected override void ImplementButDoNotCall_ApplyChange()
+        protected override void ActualApplyChange()
         {
             var customProperty = Oid.GetPersistObject() as AcSmCustomPropertyValue;
             if (customProperty == null)             

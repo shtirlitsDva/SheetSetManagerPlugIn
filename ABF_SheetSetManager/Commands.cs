@@ -60,7 +60,7 @@ namespace SheetSetManager
             doc.Editor.WriteMessage("\nVelkommen til Norsyn Sheet Set Manager!");
 
 #if DEBUG
-            AppDomain.CurrentDomain.AssemblyResolve += 
+            AppDomain.CurrentDomain.AssemblyResolve +=
                 new ResolveEventHandler(DebugHelper.Debug_AssemblyResolve);
 #endif
         }
@@ -1277,16 +1277,16 @@ namespace SheetSetManager
         {
             AcContext.Current = SynchronizationContext.Current;
 
-            try
-            {
-                var window = new SheetManagerWindow();
-                window.ShowDialog();
-            }
-            catch (System.Exception ex)
-            {
-                prdDbg(ex);
-                return;
-            }
+            //try
+            //{
+            var window = new SheetManagerWindow();
+            window.Show();
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    prdDbg(ex);
+            //    return;
+            //}
         }
 
         // Create a new sheet set with custom subsets
@@ -1513,7 +1513,7 @@ namespace SheetSetManager
         private bool LockDatabase(ref AcSmDatabase database, bool lockFlag)
         {
             bool dbLock = false;
-            // If lockFalg equals True then attempt to lock the database, otherwise 
+            // If lockFlag equals True then attempt to lock the database, otherwise 
             // attempt to unlock it. 
             if (lockFlag == true & database.GetLockStatus() == AcSmLockStatus.AcSmLockStatus_UnLocked)
             {

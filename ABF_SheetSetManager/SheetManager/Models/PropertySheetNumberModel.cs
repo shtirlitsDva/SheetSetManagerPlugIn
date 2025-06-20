@@ -19,7 +19,7 @@ namespace SheetSetManager.SheetManager.Models
             _sheetId = comSheet.GetObjectId();
             Value = comSheet.GetNumber();
         }
-        protected override void ImplementButDoNotCall_ApplyChange()
+        protected override void ActualApplyChange()
         {
             var sheet = _sheetId.GetPersistObject() as AcSmSheet;
             if (sheet == null) throw new Exception("Sheet not found!");

@@ -25,29 +25,19 @@ namespace SheetSetManager.SheetManager.Views
     /// </summary>
     public partial class ApplyConfirmationWindow : Window
     {
-        ApplyConfirmationViewModel vm = new();
-        internal bool IsConfirmed { get; private set; }
         internal ApplyConfirmationWindow()
         {
             InitializeComponent();
-            DataContext = vm;
-        }
-
-        internal void SetModifiedSheets(List<SheetModel> modifiedSheets)
-        {
-            vm.LoadModifiedSheets(modifiedSheets);
         }
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            IsConfirmed = true;
-            this.Close();
+            DialogResult = true;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            IsConfirmed = false;
-            this.Close();
+            DialogResult = false;
         }
     }
 }
