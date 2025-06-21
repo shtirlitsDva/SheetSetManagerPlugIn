@@ -8,13 +8,15 @@ using SheetSetManager.SheetManager.Interop;
 using SheetSetManager.SheetManager.Managers;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.SheetManager.Views;
+using static SheetSetManager.Utils;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-
-using static SheetSetManager.Utils;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 
 namespace SheetSetManager.SheetManager.ViewModels
@@ -22,10 +24,8 @@ namespace SheetSetManager.SheetManager.ViewModels
     internal partial class SheetSetViewModel : ObservableObject
     {
         private readonly Interop.SheetSetManager _sheetSetManager = new();
-
         public SheetsManager Sheets => _sheetSetManager.Sheets;
         [ObservableProperty] private bool _hasPendingChanges;
-
         public SheetSetViewModel()
         {
             _sheetSetManager.LoadSheets();
@@ -76,18 +76,26 @@ namespace SheetSetManager.SheetManager.ViewModels
         {
             var modifiedSheetProps = Sheets
                 .SelectMany(x => x.Properties)
-                .Where(x => x.ChangePending);
+                .Where(x => x.ChangePending)
+                .ToList();
             var modifiedRevisionsProps = Sheets
                 .SelectMany(x => x.Revisions.AllRevisions)
                 .SelectMany(x => x.Properties)
-                .Where(x => x.ChangePending);
+                .Where(x => x.ChangePending)
+                .ToList();
             var sheetsWithModifiedRevisions = Sheets
                 .Where(x => x.Revisions.AllRevisions.Any(
-                    r => r.ChangePending));                
+                    r => r.ChangePending))
+                .ToList();
+
+            if (!modifiedSheetProps.Any() &&
+                !modifiedRevisionsProps.Any() &&
+                !sheetsWithModifiedRevisions.Any()) return;
 
             var dlg = new ApplyConfirmationWindow();
             if (dlg.ShowDialog() != true) return; //Cancel
 
+            List<RevisionApplicationModel>? applications = null;
             try
             {
                 _sheetSetManager.LockDatabase();
@@ -102,7 +110,7 @@ namespace SheetSetManager.SheetManager.ViewModels
             _sheetSetManager.UnlockDatabase(true);
 
             //Implement the application of revisions
-            List<(string fileName, List<RevisionModel> revisions)> 
+            List<(string fileName, List<RevisionModel> revisions)>
                 revisionsWithFilenames = new();
             foreach (var sheet in sheetsWithModifiedRevisions)
             {
@@ -111,18 +119,23 @@ namespace SheetSetManager.SheetManager.ViewModels
                 var comLayout = comSheet.GetLayout() as AcSmAcDbLayoutReference;
                 revisionsWithFilenames.Add((comLayout.GetFileName(),
                     sheet.Revisions.AllRevisions.Where(
-                        x => x.ChangePending).ToList()));                
+                        x => x.ChangePending).ToList()));
             }
 
-            var applications = RevisionApplicationFactory
+            applications = RevisionApplicationFactory
                 .Fabricate(revisionsWithFilenames);
 
-            AcContext.Current.Post(_ =>
+            if (applications != null)
             {
-                AcOnOffRevisionLayers.Apply(applications);
-            }, null);
+                AcContext.Current.Post(_ =>
+                {
+                    AcOnOffRevisionLayers.Apply(applications);
+                }, null);
+            }
 
             ResetSheets();
+
+            prtDbg("Finished!");
         }
 
         [RelayCommand]

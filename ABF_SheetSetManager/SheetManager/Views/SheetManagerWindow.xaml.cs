@@ -26,7 +26,6 @@ namespace SheetSetManager.SheetManager.Views
 
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
         }
-
         private void CheckBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             // Prevent row expansion when clicking the checkbox
@@ -38,7 +37,6 @@ namespace SheetSetManager.SheetManager.Views
                 checkBox.IsChecked = !checkBox.IsChecked;
             }
         }
-
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space) // Check if Spacebar is pressed
@@ -50,12 +48,10 @@ namespace SheetSetManager.SheetManager.Views
                 }
             }
         }
-
         private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
 
         }
-
         private void SelectAllCheckBox_Click(object sender, RoutedEventArgs e)
         {
             if (sender is CheckBox selectAllCheckBox && DataContext is SheetSetViewModel viewModel)
@@ -66,7 +62,6 @@ namespace SheetSetManager.SheetManager.Views
                 }
             }
         }
-
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (e.Column is CustomTextColumn col &&
@@ -76,6 +71,29 @@ namespace SheetSetManager.SheetManager.Views
             {
                 vm.BroadcastEdit(e.Row.Item, col.TagPath, tb.Text);
             }
+        }
+        private void Cell_RightClickSelect(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not DataGridCell cell) return;
+            
+            var row = DataGridRow.GetRowContainingElement(cell);
+            var grid = (DataGrid)ItemsControl.ItemsControlFromItemContainer(row);
+
+            grid.SelectedItem = row.Item;                      // select the row
+            grid.CurrentCell = new DataGridCellInfo(row.Item, cell.Column);
+            cell.Focus();                                      // keyboard focus
+        }
+        /// <summary>
+        /// Cancels every edit that originates from a user click / key.
+        /// When the Edit menu triggers DataGrid.BeginEditCommand,
+        /// e.EditingEventArgs is <c>null</c> – that one is allowed.
+        /// </summary>
+        private void Grid_BeginningEdit(object? sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.EditingEventArgs is null)
+                return;                 // came from the context-menu → allow
+
+            e.Cancel = true;            // any other attempt → block
         }
     }
 }

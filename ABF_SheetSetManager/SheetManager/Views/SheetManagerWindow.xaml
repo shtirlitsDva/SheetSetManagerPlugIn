@@ -10,7 +10,33 @@
         >
 
     <Window.Resources>
-        <ResourceDictionary Source="Styles/Styles.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="EditableCellStyle" TargetType="DataGridCell">
+                <EventSetter Event="PreviewMouseRightButtonDown"
+                 Handler="Cell_RightClickSelect"/>
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu>
+                            <MenuItem Header="_Edit"
+                          Command="{x:Static DataGrid.BeginEditCommand}"
+                          CommandTarget="{Binding
+                              RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- grid style only applies the cell style -->
+            <Style x:Key="ManagedDataGridStyle"
+       TargetType="DataGrid"
+       BasedOn="{StaticResource {x:Type DataGrid}}">
+                <Setter Property="CellStyle"
+            Value="{StaticResource EditableCellStyle}"/>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <!-- Custom Title Bar -->
@@ -38,13 +64,15 @@
     <Grid>
         <DataGrid ItemsSource="{Binding Sheets}" SelectedItem="{Binding Sheets.SelectedSheet}"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                  IsReadOnly="False" PreviewKeyDown="DataGrid_PreviewKeyDown"
+                  IsReadOnly="False" 
+                  PreviewKeyDown="DataGrid_PreviewKeyDown"
                   CellEditEnding="DataGrid_CellEditEnding"
+                  BeginningEdit="Grid_BeginningEdit"
+                  Sorting="DataGrid_Sorting"
                   RowStyle="{StaticResource {x:Type DataGridRow}}"
-                  Sorting="DataGrid_Sorting"            
+                  Style="{StaticResource ManagedDataGridStyle}"
                   >
             <DataGrid.Columns>
-
                 <!-- Checkbox for selection -->
                 <DataGridTemplateColumn Width="40">
                     <!-- Header Checkbox: Clicks select/deselect all -->
@@ -119,7 +147,11 @@
                             <DataGrid ItemsSource="{Binding Revisions}"
                                       AutoGenerateColumns="False" 
                                       CanUserAddRows="False"
-                                      CellEditEnding="DataGrid_CellEditEnding">
+                                      PreviewKeyDown="DataGrid_PreviewKeyDown"
+                                      CellEditEnding="DataGrid_CellEditEnding"
+                                      BeginningEdit="Grid_BeginningEdit"
+                                      Style="{StaticResource ManagedDataGridStyle}"
+                                      >
                                 <DataGrid.Columns>
                                     <local:CustomTextColumn Binding="{Binding RevisionLetter.Value,
                                         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
