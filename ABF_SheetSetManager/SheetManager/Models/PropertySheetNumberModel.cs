@@ -14,10 +14,10 @@ namespace SheetSetManager.SheetManager.Models
     internal class PropertySheetNumberModel : PropertyBase
     {        
         private IAcSmObjectId _sheetId { get; }
-        internal PropertySheetNumberModel(AcSmSheet comSheet) : base("Number")
+        internal PropertySheetNumberModel(AcSmSheet comSheet) 
+            : base("Number", comSheet.GetNumber())
         {
-            _sheetId = comSheet.GetObjectId();
-            Value = comSheet.GetNumber();
+            _sheetId = comSheet.GetObjectId();            
         }
         protected override void ActualApplyChange()
         {

@@ -35,6 +35,7 @@ namespace SheetSetManager.SheetManager.Interop
                     sheetDb.Dispose();
                     throw;
                 }
+                sheetDb.SaveAs(model.DatabaseFileName, true, DwgVersion.Newest, null);
                 tx.Commit();
             }
         }

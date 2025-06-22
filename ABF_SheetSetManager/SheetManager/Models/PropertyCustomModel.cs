@@ -18,10 +18,9 @@ namespace SheetSetManager.SheetManager.Models
 
         public PropertyCustomModel(
             (string Name, AcSmCustomPropertyValue Value) property) :
-            base(property.Name)
-        {
-            Value = property.Value.GetValue();
-            Oid = property.Value.GetObjectId();
+            base(property.Name, (string)property.Value.GetValue())
+        {            
+            Oid = property.Value.GetObjectId();            
         }
 
         protected override void ActualApplyChange()

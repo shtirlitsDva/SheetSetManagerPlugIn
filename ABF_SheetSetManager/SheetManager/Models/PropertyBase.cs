@@ -33,9 +33,10 @@ namespace SheetSetManager.SheetManager.Models
         }
         protected abstract void ActualApplyChange();
         
-        public PropertyBase(string name)
+        public PropertyBase(string name, string? initialValue)
         {
             Name = name;
+            _value = initialValue;
         }
     }
 }
