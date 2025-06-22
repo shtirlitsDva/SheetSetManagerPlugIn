@@ -24,6 +24,6 @@ namespace SheetSetManager
             if (File.Exists(filePath)) return Assembly.LoadFrom(filePath);
             else { prdDbg($"File not found: {filePath}!"); return null; }
         }
-    }
 #endif
+    }
 }
