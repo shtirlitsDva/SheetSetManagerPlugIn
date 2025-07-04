@@ -2,14 +2,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using SheetSetManager.SheetManager.Managers;
 
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace SheetSetManager.SheetManager.Models
 {
-    internal partial class SheetModel : ObservableObject
+    public partial class SheetModel : ObservableObject
     {
         public PropertyManager Properties { get; }
         public RevisionManager Revisions { get; }
+        public List<SheetModel> AllSheetsOnDwg { get; set; } = new();
 
         [ObservableProperty] private bool _isSelected = false;        
 
@@ -18,7 +21,7 @@ namespace SheetSetManager.SheetManager.Models
             Oid = comSheet.GetObjectId();
 
             Properties = new PropertyManager(comSheet);
-            Revisions = new RevisionManager(comSheet);
+            Revisions = new RevisionManager(comSheet, this);
         }
 
         public IAcSmObjectId Oid { get; }        

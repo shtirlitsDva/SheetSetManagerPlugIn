@@ -25,6 +25,8 @@ namespace SheetSetManager.SheetManager.Managers
         [ObservableProperty] private IProperty _drawnBy;
         [ObservableProperty] private IProperty _scale;
 
+        public IProperty AktuelRevisionBogstav;
+
         private IAcSmObjectId _sheetId;
         public PropertyManager(AcSmSheet comSheet)
         {
@@ -51,6 +53,8 @@ namespace SheetSetManager.SheetManager.Managers
                     case "Godkendt": ApprovedBy = property; Add(property); break;
                     case "Kontrol": CheckedBy = property; Add(property); break;
                     case "Målestok ex 1:50": Scale = property; Add(property); break;
+                    //This property is managed separately
+                    case "Aktuel revision bogstav": AktuelRevisionBogstav = property; break;
                 }
             }
         }

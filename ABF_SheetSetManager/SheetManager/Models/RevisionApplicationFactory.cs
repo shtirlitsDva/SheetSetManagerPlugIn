@@ -16,13 +16,13 @@ namespace SheetSetManager.SheetManager.Models
         {
             List<RevisionApplicationModel> apps = new();
 
-            var gps = fileNamesAndRevisions.GroupBy(x => x.fileName);
+            var dwgGps = fileNamesAndRevisions.GroupBy(x => x.fileName);
 
-            foreach (var gp in gps)
+            foreach (var dwgGp in dwgGps)
             {
-                var revApp = new RevisionApplicationModel(gp.Key);
+                var revApp = new RevisionApplicationModel(dwgGp.Key);
 
-                var revGps = gp
+                var revGps = dwgGp
                     .SelectMany(x => x.revisions)
                     .GroupBy(x => x.RevId);
 
@@ -30,8 +30,16 @@ namespace SheetSetManager.SheetManager.Models
                 {
                     if (revGp.All(x => x.IsValid)) revApp.AddAction(
                         new RevisionApplicationAction(revGp.Key, RevisionAction.On));
-                    else if (revGp.All(x => !x.IsValid)) revApp.AddAction(
-                        new RevisionApplicationAction(revGp.Key, RevisionAction.Off));
+                    else if (revGp.All(x => !x.IsValid) &&
+                        !revGp.First().Sheet
+                            .AllSheetsOnDwg
+                            .SelectMany(x => x.Revisions)
+                            .Where(x => x.RevId == revGp.Key).Any()) //Second check to see if while some
+                            //revisions are removed that there aren't any left that should not be removed
+                            //ie. revisions that share the same layer but were not removed
+                    {
+                        revApp.AddAction(new RevisionApplicationAction(revGp.Key, RevisionAction.Off));
+                    }
                     //Mixed if On
                     else revApp.AddAction(
                         new RevisionApplicationAction(

@@ -5,7 +5,9 @@ using SheetSetManager.SheetManager.Models;
 using SheetSetManager.Wrappers;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 
 using static SheetSetManager.Utils;
 
@@ -87,6 +89,7 @@ namespace SheetSetManager.SheetManager.Interop
                 AcSmSubset subset = (AcSmSubset)ssComp;
                 var subsetEnum = new AcSmComEnumerator(subset.GetSheetEnumerator());
 
+                List<SheetModel> subsetSheets = new();
                 foreach (var sbsComp in subsetEnum)
                 {
                     if (sbsComp.GetTypeName() != "AcSmSheet") continue;
@@ -95,6 +98,13 @@ namespace SheetSetManager.SheetManager.Interop
                     var sheetModel = new SheetModel(sheet);
 
                     _sheets.Add(sheetModel);
+                    subsetSheets.Add(sheetModel);
+                }
+
+                //This list is populated so sheets can compare
+                foreach (var sheet in subsetSheets)
+                {
+                    sheet.AllSheetsOnDwg = subsetSheets.ToList();
                 }
             }
         }
