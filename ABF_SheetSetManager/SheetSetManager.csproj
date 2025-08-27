@@ -13,6 +13,7 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<OutputType>Library</OutputType>
 		<Deterministic>false</Deterministic>
 		<AssemblyName>SheetSetManager</AssemblyName>
