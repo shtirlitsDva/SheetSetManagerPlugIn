@@ -40,24 +40,14 @@
 		<DebugType>full</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<COMReference Include="AXDBLib">
-			<Guid>{39FFAA00-8623-488F-8C53-DD3B0B7A464F}</Guid>
-			<VersionMajor>1</VersionMajor>
-			<VersionMinor>0</VersionMinor>
-			<Lcid>0</Lcid>
-			<WrapperTool>tlbimp</WrapperTool>
-			<Isolated>False</Isolated>
-			<EmbedInteropTypes>True</EmbedInteropTypes>
-		</COMReference>
-		<COMReference Include="ACSMCOMPONENTS25Lib">
-			<WrapperTool>tlbimp</WrapperTool>
-			<VersionMinor>0</VersionMinor>
-			<VersionMajor>1</VersionMajor>
-			<Guid>1d699551-94ba-4d13-8c93-7afbf62a713e</Guid>
-			<Lcid>0</Lcid>
-			<Isolated>false</Isolated>
+		<Reference Include="AXDBLib">
+			<HintPath>lib\Interop.AXDBLib.dll</HintPath>
 			<EmbedInteropTypes>true</EmbedInteropTypes>
-		</COMReference>
+		</Reference>
+		<Reference Include="ACSMCOMPONENTS25Lib">
+			<HintPath>lib\Interop.ACSMCOMPONENTS25Lib.dll</HintPath>
+			<EmbedInteropTypes>true</EmbedInteropTypes>
+		</Reference>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />

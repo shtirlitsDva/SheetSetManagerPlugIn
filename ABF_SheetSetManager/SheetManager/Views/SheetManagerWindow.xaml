@@ -9,7 +9,7 @@
         Title="Sheet Manager" Height="600" Width="900"
         >
 
-    <Window.Resources>
+    <hc:Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Styles.xaml"/>
@@ -37,7 +37,7 @@
             Value="{StaticResource EditableCellStyle}"/>
             </Style>
         </ResourceDictionary>
-    </Window.Resources>
+    </hc:Window.Resources>
 
     <!-- Custom Title Bar -->
     <hc:Window.NonClientAreaContent>

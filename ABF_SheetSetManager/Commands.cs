@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,10 +38,11 @@ using System.Reflection;
 // 5) Make sure references do not copy local: Select Reference > right click > properties > Copy Local = False 
 #endregion
 
-[assembly: CommandClass(typeof(SheetSetManager.Commands))]
+[assembly: CommandClass(typeof(SheetSetManager.NoCommands))]
 
 namespace SheetSetManager
 {
+    public class NoCommands { }
     public class Commands : IExtensionApplication
     {
         MySSmEventHandler eventHandler;
@@ -58,11 +59,6 @@ namespace SheetSetManager
             Document doc = Autodesk.AutoCAD.ApplicationServices.Application
                 .DocumentManager.MdiActiveDocument;
             doc.Editor.WriteMessage("\nVelkommen til Norsyn Sheet Set Manager!");
-
-#if DEBUG
-            AppDomain.CurrentDomain.AssemblyResolve +=
-                new ResolveEventHandler(DebugHelper.Debug_AssemblyResolve);
-#endif
         }
 
         public void Terminate()
@@ -1098,7 +1094,7 @@ namespace SheetSetManager
                             smComponent = enumSheets.Next();
                         }
 
-                        sSet.RemoveSubset(subSet);
+                        sSet.RemoveSubset((AcSmSubset)subSet);
 
                         //Open the next sheet
                         smComponent = enumSubSet.Next();
