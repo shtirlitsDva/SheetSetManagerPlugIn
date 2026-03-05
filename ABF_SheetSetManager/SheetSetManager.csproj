@@ -9,10 +9,11 @@
 		<Nullable>enable</Nullable>
 		<PlatformTarget>x64</PlatformTarget>
 		<Platforms>x64</Platforms>
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<TargetPlatformMinVersion>10.0.26100.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 	<PropertyGroup>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<OutputType>Library</OutputType>
 		<Deterministic>false</Deterministic>
 		<AssemblyName>SheetSetManager</AssemblyName>

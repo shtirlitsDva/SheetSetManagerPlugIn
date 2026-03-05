@@ -8,15 +8,13 @@ using SheetSetManager.SheetManager.Interop;
 using SheetSetManager.SheetManager.Managers;
 using SheetSetManager.SheetManager.Models;
 using SheetSetManager.SheetManager.Views;
-using static SheetSetManager.Utils;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
+
+using static SheetSetManager.Utils;
 
 
 namespace SheetSetManager.SheetManager.ViewModels
@@ -101,8 +99,21 @@ namespace SheetSetManager.SheetManager.ViewModels
                 _sheetSetManager.LockDatabase();
                 foreach (var prop in modifiedSheetProps) prop.ApplyChange();
                 foreach (var prop in modifiedRevisionsProps) prop.ApplyChange();
+
+                //Handle the aktuel revision bogstav separately
+                foreach (var sheet in sheetsWithModifiedRevisions)
+                {
+                    var lastRevision = sheet.Revisions.LastOrDefault();
+                    if (lastRevision == null)
+                        sheet.Properties.AktuelRevisionBogstav.Value = "";
+                    else
+                        sheet.Properties.AktuelRevisionBogstav.Value =
+                            lastRevision.RevisionLetter.Value;
+
+                    sheet.Properties.AktuelRevisionBogstav.ApplyChange();
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _sheetSetManager.UnlockDatabase(false);
                 throw;

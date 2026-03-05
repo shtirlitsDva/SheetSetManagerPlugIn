@@ -32,7 +32,7 @@ namespace SheetSetManager.SheetManager.Managers
 
         private IAcSmObjectId _sheetId;
 
-        public RevisionManager(AcSmSheet comSheet)
+        public RevisionManager(AcSmSheet comSheet, SheetModel sheet)
         {
             //Implement wpf stuff
             _valid.CollectionChanged += (_, e) => CollectionChanged?.Invoke(this, e);
@@ -57,7 +57,7 @@ namespace SheetSetManager.SheetManager.Managers
 
             foreach (var group in query)
             {
-                var revision = new RevisionModel(group.ToList());
+                var revision = new RevisionModel(group.ToList(), sheet);
                 _all.Add(revision);
                 if (revision.IsValid) _valid.Add(revision);
             }

@@ -67,6 +67,13 @@ namespace SheetSetManager
         }
         #endregion
 
+        /// <command>RenameSheetsOLD, RSSOLD</command>
+        /// <summary>
+        /// Renames sheets to the old format.
+        /// Opens a dialog to input project, etape and sheet type, then renames and renumbers all sheets
+        /// across the open sheet set(s) to the format Project-Etape-TypePipeline-Sequence and cleans titles.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("RenameSheetsOLD")]
         [CommandMethod("RSSOLD")]
         public void renamesheetsOLDcallform()
@@ -246,6 +253,13 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
+        /// <command>RenameSheetsVF, RSSVF</command>
+        /// <summary>
+        /// Renames sheets to VF (Vestforbrænding) standard.
+        /// Opens the VF renaming dialog and renumbers sheets to Program_Kommune_Energidistrikt_NNN_Sequence,
+        /// sets title to "LEDNINGSPLAN", and updates relevant custom properties on each sheet.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("RenameSheetsVF")]
         [CommandMethod("RSSVF")]
         public void renamesheetsVFcallform()
@@ -388,6 +402,13 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
+        /// <command>RenameSheetsNS, RSSNS</command>
+        /// <summary>
+        /// Renames sheets to Norsyn latest sheet naming format.
+        /// Opens the NS renaming dialog and renumbers sheets to Projekt_Etape_02_NNN_Sequence,
+        /// sets title to "LEDNINGSPLAN", and updates custom properties for strækning and station range.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("RenameSheetsNS")]
         [CommandMethod("RSSNS")]
         public void renamesheetsNScallform()
@@ -537,7 +558,12 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
-        // Step through all open sheet sets 
+        /// <command>RenameOldSheetsToNew, ROS</command>
+        /// <summary>
+        /// Converts legacy sheet numbers and titles to the new standardized format and updates sheet
+        /// custom properties accordingly for all sheets in the open sheet set(s).
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("RenameOldSheetsToNew")]
         [CommandMethod("ROS")]
         public void renameoldsheetstonew()
@@ -747,7 +773,12 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
-        // Step through all open sheet sets 
+        /// <command>DUMPALLSHEETNAMES</command>
+        /// <summary>
+        /// Exports a CSV (C:\Temp\liste.csv) listing each sheet's number and title from all open sheet set(s).
+        /// Useful for creating a drawing list.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("DUMPALLSHEETNAMES")]
         public void dumpallsheetnames()
         {
@@ -823,8 +854,8 @@ namespace SheetSetManager
             File.WriteAllText(@"C:\Temp\liste.csv", sb.ToString(), Encoding.UTF8);
         }
 
-        // Step through all open sheet sets 
-        [CommandMethod("DUMPALLNUMBERSANDSTATIONS")]
+        
+        //[CommandMethod("DUMPALLNUMBERSANDSTATIONS")]
         public void dumpallnumbersandstations()
         {
             StringBuilder sb = new StringBuilder();
@@ -902,7 +933,6 @@ namespace SheetSetManager
             File.WriteAllText(@"C:\Temp\liste.csv", sb.ToString(), Encoding.UTF8);
         }
 
-        // Step through all open sheet sets 
         //[CommandMethod("removerevisionfromname")]
         public void removerevisionfromname()
         {
@@ -1025,7 +1055,11 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
-        // Step through all open sheet sets 
+        /// <command>DeleteSheets</command>
+        /// <summary>
+        /// Deletes all sheets and subsets from the open sheet set(s). Use with caution; this operation is destructive.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("DeleteSheets")]
         public void DeleteAllSheets()
         {
@@ -1118,6 +1152,12 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
+        /// <command>MODIFYCUSTOMPROPERTIES, MODPROPS</command>
+        /// <summary>
+        /// Opens a dialog to select custom properties and values, then applies those values to all sheets
+        /// in the currently open sheet set.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("MODIFYCUSTOMPROPERTIES")]
         [CommandMethod("MODPROPS")]
         public void modifycustomproperties()
@@ -1267,6 +1307,12 @@ namespace SheetSetManager
             prdDbg(customMessage);
         }
 
+        /// <command>MANAGEREVISIONSONSHEETS, MROS</command>
+        /// <summary>
+        /// Opens the Sheet Manager window to review and manage revisions across sheets within the open sheet set.
+        /// Also can be used to modify sheet properties. Like MODPROPS, but on a subset of sheets.
+        /// </summary>
+        /// <category>Sheet Production</category>
         [CommandMethod("MANAGEREVISIONSONSHEETS")]
         [CommandMethod("MROS")]
         public void managerevisionsonsheets()

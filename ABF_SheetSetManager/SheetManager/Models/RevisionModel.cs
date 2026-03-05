@@ -13,6 +13,7 @@ namespace SheetSetManager.SheetManager.Models
 {
     public partial class RevisionModel : ObservableObject
     {
+        public SheetModel Sheet { get; init; }
         public RevisionId RevId { get; }
         [ObservableProperty] private bool _changePending = false;
 
@@ -31,13 +32,15 @@ namespace SheetSetManager.SheetManager.Models
             set => _propDict[name] = value;
         }
 
-        public RevisionModel(List<(string Name, AcSmCustomPropertyValue Value)> list)
+        public RevisionModel(List<(string Name, AcSmCustomPropertyValue Value)> list, SheetModel sheet)
         {
+            this.Sheet = sheet;
+
             if (list.Count == 0) throw new System.Exception("Property list empty!");
             var tokens = list[0].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length >= 2)
             {
-                var enumKey = $"{tokens[0]}{tokens[1]}";        //  "Rev" + "A" →  "RevA"
+                var enumKey = $"{tokens[0]}{tokens[1]}"; //"Rev" + "A" →  "RevA"
                 if (Enum.TryParse(enumKey, out RevisionId parsed)) RevId = parsed;
             }
 
