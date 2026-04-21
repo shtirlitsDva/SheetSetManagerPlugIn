@@ -12,7 +12,7 @@
     <hc:Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles/Styles.xaml"/>
+                <ResourceDictionary Source="Styles/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="EditableCellStyle" TargetType="DataGridCell">
                 <EventSetter Event="PreviewMouseRightButtonDown"

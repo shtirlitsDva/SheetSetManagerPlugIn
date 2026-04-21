@@ -15,7 +15,7 @@
     <hc:Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/SheetSetManager;component/SheetManager/Views/Styles/Styles.xaml"/>
+                <ResourceDictionary Source="/SheetSetManager;component/SheetManager/Views/Styles/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Status → row background brush -->
@@ -90,10 +90,13 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0"
-                    BorderThickness="1" BorderBrush="#3A4452"
-                    Padding="10" Margin="0,0,10,0">
+                    Background="{DynamicResource DarkBackground}"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    CornerRadius="4"
+                    Padding="12" Margin="0,0,10,0">
                 <StackPanel>
-                    <TextBlock Text="Inputs" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <TextBlock Text="Inputs" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
                     <ItemsControl ItemsSource="{Binding Inputs}"
                                   ItemTemplateSelector="{StaticResource InputFieldTemplateSelector}"/>
                 </StackPanel>
@@ -159,9 +162,11 @@
                        VerticalAlignment="Center"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Button Content="Cancel" Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
                         MinWidth="100" Margin="0,0,8,0"/>
                 <Button Content="Apply"  Command="{Binding ApplyCommand}"
-                        MinWidth="100" Background="#465264" Foreground="White"/>
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        MinWidth="100"/>
             </StackPanel>
         </Grid>
     </Grid>
