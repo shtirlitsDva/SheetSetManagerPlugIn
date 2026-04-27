@@ -46,6 +46,16 @@ namespace SheetSetManager.SheetManager.Rename.Views
             => throw new NotSupportedException();
     }
 
+    /// <summary>true → Visible, false → Collapsed. For "show fatal error banner".</summary>
+    internal sealed class BoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => (value is bool b && b) ? Visibility.Visible : Visibility.Collapsed;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
+    }
+
     /// <summary>Int → Visibility: 0 → Collapsed, &gt;0 → Visible.</summary>
     internal sealed class CountToVisibilityConverter : IValueConverter
     {

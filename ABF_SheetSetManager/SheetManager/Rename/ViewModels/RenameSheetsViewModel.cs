@@ -53,17 +53,41 @@ namespace SheetSetManager.SheetManager.Rename.ViewModels
             UnhookInputs();
             Inputs.Clear();
 
-            var persisted = _inputsStore.Load(value.Id);
-            foreach (var field in value.InputFields)
+            // Preflight runs once per profile change. It tells us which inputs are actually
+            // required for *this* sheet set and surfaces fatal policy violations.
+            var preflight = value.Preflight(_source.Snapshots);
+            FatalErrors = preflight.FatalErrors.Count > 0
+                ? string.Join("\n", preflight.FatalErrors)
+                : null;
+
+            if (FatalErrors is null)
             {
-                persisted.TryGetValue(field.Name, out var v);
-                var fieldVm = new RenameInputFieldViewModel(field, v);
-                fieldVm.PropertyChanged += OnInputFieldPropertyChanged;
-                Inputs.Add(fieldVm);
+                var persisted = _inputsStore.Load(value.Id);
+                foreach (var field in preflight.RequiredInputs)
+                {
+                    persisted.TryGetValue(field.Name, out var v);
+                    var fieldVm = new RenameInputFieldViewModel(field, v);
+                    fieldVm.PropertyChanged += OnInputFieldPropertyChanged;
+                    Inputs.Add(fieldVm);
+                }
             }
 
             RebuildPreview();
         }
+
+        /// <summary>
+        /// Non-null when the selected profile's preflight blocked the run for this sheet set.
+        /// While set, the inputs panel is empty, the preview is empty, and Apply is disabled.
+        /// </summary>
+        [ObservableProperty] private string? _fatalErrors;
+
+        partial void OnFatalErrorsChanged(string? value)
+        {
+            OnPropertyChanged(nameof(HasFatalErrors));
+            ApplyCommand.NotifyCanExecuteChanged();
+        }
+
+        public bool HasFatalErrors => FatalErrors is not null;
 
         private void UnhookInputs()
         {
@@ -100,7 +124,7 @@ namespace SheetSetManager.SheetManager.Rename.ViewModels
             OnPropertyChanged(nameof(HasInputErrors));
 
             PreviewRows.Clear();
-            if (HasInputErrors)
+            if (HasFatalErrors || HasInputErrors)
             {
                 MatchedCount = NoChangeCount = ErrorCount = 0;
                 OnPropertyChanged(nameof(HasPreviewErrors));
@@ -155,7 +179,7 @@ namespace SheetSetManager.SheetManager.Rename.ViewModels
         }
 
         private bool CanApply() =>
-            !HasInputErrors && !HasPreviewErrors && MatchedCount > 0;
+            !HasFatalErrors && !HasInputErrors && !HasPreviewErrors && MatchedCount > 0;
 
         [RelayCommand]
         private void Cancel()
