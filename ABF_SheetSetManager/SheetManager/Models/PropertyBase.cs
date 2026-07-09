@@ -17,11 +17,20 @@ namespace SheetSetManager.SheetManager.Models
         public string? Value
         {
             get => _value;
-            set { 
-                if (SetProperty(ref _value, value)) ChangePending = true;
+            set
+            {
+                // Null and empty both mean "no value". WPF's edit TextBox commits ""
+                // for a null cell, so entering an already-empty cell and leaving it
+                // untouched must NOT be treated as a change.
+                if (!string.Equals(_value ?? string.Empty, value ?? string.Empty, StringComparison.Ordinal))
+                {
+                    _value = value;
+                    OnPropertyChanged();
+                    ChangePending = true;
+                }
                 OnPropertyChanged(nameof(ChangePending));
             }
-        }        
+        }
 
         public bool ChangePending { get; private set; } = false;
         public void ApplyChange()
