@@ -1,9 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetSetManager", "ABF_SheetSetManager\SheetSetManager.csproj", "{D1B49369-4554-488A-B3E5-AAB093163663}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ABF_SheetSetManager.Tests", "ABF_SheetSetManager.Tests", "{70E282A9-3AF8-DCEB-CBF3-C835604A5D91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SheetSetManager.Tests", "ABF_SheetSetManager.Tests\SheetSetManager.Tests.csproj", "{12A02D69-2AA6-49AC-8D39-CB906F09648B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{D1B49369-4554-488A-B3E5-AAB093163663}.Debug|x64.Build.0 = Debug|x64
 		{D1B49369-4554-488A-B3E5-AAB093163663}.Release|x64.ActiveCfg = Release|x64
 		{D1B49369-4554-488A-B3E5-AAB093163663}.Release|x64.Build.0 = Release|x64
+		{12A02D69-2AA6-49AC-8D39-CB906F09648B}.Debug|x64.ActiveCfg = Debug|x64
+		{12A02D69-2AA6-49AC-8D39-CB906F09648B}.Debug|x64.Build.0 = Debug|x64
+		{12A02D69-2AA6-49AC-8D39-CB906F09648B}.Release|x64.ActiveCfg = Release|x64
+		{12A02D69-2AA6-49AC-8D39-CB906F09648B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{12A02D69-2AA6-49AC-8D39-CB906F09648B} = {70E282A9-3AF8-DCEB-CBF3-C835604A5D91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BE02A03A-38A2-4107-907D-9B05B63EACEC}

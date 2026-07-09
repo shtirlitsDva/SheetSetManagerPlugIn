@@ -1,0 +1,189 @@
+<hc:Window x:Class="SheetSetManager.SheetManager.Rename.Views.RenameSheetsWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:vm="clr-namespace:SheetSetManager.SheetManager.Rename.ViewModels"
+        xmlns:engine="clr-namespace:SheetSetManager.SheetManager.Rename.Engine"
+        xmlns:profiles="clr-namespace:SheetSetManager.SheetManager.Rename.Profiles"
+        xmlns:local="clr-namespace:SheetSetManager.SheetManager.Rename.Views"
+        mc:Ignorable="d"
+        Title="Rename sheets" Height="640" Width="1100">
+
+    <hc:Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SheetSetManager;component/SheetManager/Views/Styles/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Status → row background brush -->
+            <local:RenameStatusToBrushConverter x:Key="StatusToBrush"/>
+            <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+            <local:CountToVisibilityConverter x:Key="CountToVis"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToVis"/>
+
+            <!-- One DataTemplate per input field kind. The selector below picks the right one. -->
+            <DataTemplate x:Key="TextInputTemplate" DataType="{x:Type vm:RenameInputFieldViewModel}">
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Label}" Margin="0,0,0,2"/>
+                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#E06464"
+                               Visibility="{Binding IsValid,
+                                   Converter={StaticResource InverseBoolToVis}}"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="ChoiceInputTemplate" DataType="{x:Type vm:RenameInputFieldViewModel}">
+                <StackPanel Margin="0,0,0,8">
+                    <TextBlock Text="{Binding Label}" Margin="0,0,0,2"/>
+                    <ComboBox ItemsSource="{Binding Choices}"
+                              DisplayMemberPath="Label"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#E06464"
+                               Visibility="{Binding IsValid,
+                                   Converter={StaticResource InverseBoolToVis}}"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <local:RenameInputFieldTemplateSelector x:Key="InputFieldTemplateSelector"
+                TextTemplate="{StaticResource TextInputTemplate}"
+                ChoiceTemplate="{StaticResource ChoiceInputTemplate}"/>
+        </ResourceDictionary>
+    </hc:Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- profile picker -->
+            <RowDefinition Height="Auto"/>  <!-- fatal errors banner -->
+            <RowDefinition Height="*"/>     <!-- inputs + preview -->
+            <RowDefinition Height="Auto"/>  <!-- status + buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Profile picker -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Profile:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <ComboBox  Grid.Column="1"
+                       ItemsSource="{Binding Profiles}"
+                       SelectedItem="{Binding SelectedProfile}"
+                       DisplayMemberPath="DisplayName"/>
+            <TextBlock Grid.Column="2"
+                       Text="{Binding SelectedProfile.Description}"
+                       VerticalAlignment="Center"
+                       Margin="16,0,0,0"
+                       TextWrapping="Wrap"
+                       Opacity="0.75"/>
+        </Grid>
+
+        <!-- Fatal-errors banner: visible only when the profile's Preflight rejected the sheet set. -->
+        <Border Grid.Row="1"
+                Background="#6B2E2E"
+                BorderBrush="#8A3A3A"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="10,8"
+                Margin="0,0,0,10"
+                Visibility="{Binding HasFatalErrors, Converter={StaticResource BoolToVis}}">
+            <TextBlock Text="{Binding FatalErrors}"
+                       Foreground="White"
+                       TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Inputs + preview -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="{DynamicResource DarkBackground}"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    CornerRadius="4"
+                    Padding="12" Margin="0,0,10,0">
+                <StackPanel>
+                    <TextBlock Text="Inputs" FontWeight="Bold" FontSize="14" Margin="0,0,0,10"/>
+                    <ItemsControl ItemsSource="{Binding Inputs}"
+                                  ItemTemplateSelector="{StaticResource InputFieldTemplateSelector}"/>
+                </StackPanel>
+            </Border>
+
+            <DataGrid Grid.Column="1"
+                      ItemsSource="{Binding PreviewRows}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False" CanUserDeleteRows="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      RowHeaderWidth="0">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow"
+                           BasedOn="{StaticResource {x:Type DataGridRow}}">
+                        <Setter Property="Background"
+                                Value="{Binding Status, Converter={StaticResource StatusToBrush}}"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Subset"     Width="120" Binding="{Binding SubsetName}"/>
+                    <DataGridTextColumn Header="Old number" Width="160" Binding="{Binding OldNumber}"/>
+                    <DataGridTextColumn Header="New number" Width="180" Binding="{Binding NewNumber}"/>
+                    <DataGridTextColumn Header="Old title"  Width="160" Binding="{Binding OldTitle}"/>
+                    <DataGridTextColumn Header="New title"  Width="160" Binding="{Binding NewTitle}"/>
+                    <DataGridTextColumn Header="Status"     Width="80"  Binding="{Binding Status}"/>
+                    <DataGridTextColumn Header="Notes"      Width="*"   Binding="{Binding ErrorMessage}"/>
+                </DataGrid.Columns>
+
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="20,4,4,8">
+                            <TextBlock Text="Custom property changes:" FontWeight="Bold" Margin="0,0,0,4"
+                                       Visibility="{Binding PropertyChanges.Count,
+                                           Converter={StaticResource CountToVis}}"/>
+                            <ItemsControl ItemsSource="{Binding PropertyChanges}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold"/>
+                                            <Run Text=": "/>
+                                            <Run Text="{Binding OldValue, Mode=OneWay}" Foreground="#A0A0A0"/>
+                                            <Run Text="  →  "/>
+                                            <Run Text="{Binding NewValue, Mode=OneWay}"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </Grid>
+
+        <!-- Status + buttons -->
+        <Grid Grid.Row="3" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding StatusSummary}"
+                       VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Cancel" Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        MinWidth="100" Margin="0,0,8,0"/>
+                <Button Content="Apply"  Command="{Binding ApplyCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        MinWidth="100"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</hc:Window>

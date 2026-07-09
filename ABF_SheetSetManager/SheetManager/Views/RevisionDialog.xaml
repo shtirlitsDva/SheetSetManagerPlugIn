@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
 
     <hc:Window.Resources>
-        <ResourceDictionary Source="Styles/Styles.xaml"/>
+        <ResourceDictionary Source="Styles/Theme.xaml"/>
     </hc:Window.Resources>
 
     <Grid Margin="16">
