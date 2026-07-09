@@ -84,16 +84,21 @@ namespace SheetSetManager.SheetManager.Views
             cell.Focus();                                      // keyboard focus
         }
         /// <summary>
-        /// Cancels every edit that originates from a user click / key.
-        /// When the Edit menu triggers DataGrid.BeginEditCommand,
-        /// e.EditingEventArgs is <c>null</c> – that one is allowed.
+        /// Editing is only allowed on rows whose checkbox is ticked.
+        /// The committed value is then broadcast to every ticked sheet
+        /// (see <see cref="SheetSetViewModel.BroadcastEdit"/>).
+        /// Revision sub-rows are gated on their parent sheet's selection.
         /// </summary>
         private void Grid_BeginningEdit(object? sender, DataGridBeginningEditEventArgs e)
         {
-            if (e.EditingEventArgs is null)
-                return;                 // came from the context-menu → allow
+            bool allowed = e.Row?.Item switch
+            {
+                SheetModel sheet => sheet.IsSelected,
+                RevisionModel revision => revision.Sheet.IsSelected,
+                _ => false
+            };
 
-            e.Cancel = true;            // any other attempt → block
+            if (!allowed) e.Cancel = true;
         }
     }
 }
